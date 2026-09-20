@@ -1,6 +1,6 @@
 # ARCH-001 — First native configuration and launch checkpoint
 
-Revision: 2. Status: proposed; coding prohibited until independent passing
+Revision: 3. Status: proposed; coding prohibited until independent passing
 review and lead adoption of the exact content hash. Author: primary lead.
 
 ## Purpose and authorized increment
@@ -58,9 +58,12 @@ Source evidence: [installation investigation](../engineering/evidence/installati
 and [OpenConfiguration](https://developer.apple.com/documentation/appkit/nsworkspace/openconfiguration).
 
 The Bohemia guide documents `C:`-prefixed absolute mod paths and semicolon
-separators. Arrays of native process arguments avoid shell quoting but do not
-prove engine interpretation of spaces. The first real launch must validate this
-behavior; no game-compatible claim follows solely from unit tests or handoff.
+separators. Arrays of native process arguments avoid a shell, but the installed
+eON wrapper also bridges to a Windows-style command line. User testing of the
+revision2 candidate reports selected mods absent. The Mac guide documents
+embedded double quotes around values with spaces. Revision3 corrects this
+serialization boundary; the correction remains a candidate until actual game
+loading is observed. Unit tests and process handoff alone cannot prove loading.
 
 ## Module boundaries and data contracts
 
@@ -203,8 +206,14 @@ The pure planner:
   is represented by its resolved absolute path prefixed with `C:` per the Mac
   guide. Reject semicolons, newlines, NUL or double quotes within paths because
   the engine's separator/quoting syntax cannot represent those safely here.
-  Ordinary spaces remain literal within one argv element; do not add shell
-  escapes or shell quotes to path bytes.
+  Enclose the complete semicolon-joined value in literal double quote characters
+  inside that single argv element, for example
+  `-mod="C:/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/463939057/;C:/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/450814997/"`.
+  These delimiters serve the downstream engine parser; they are not a shell
+  command. Ordinary spaces, Unicode and existing directory trailing slashes
+  remain unchanged. Do not add backslashes before spaces or quote delimiters.
+  Quote the full list consistently for one or more selected items, including
+  paths without spaces; with no selected items omit `-mod` completely.
 - Adds the documented `-p`, `default`, `-no-remote` as separate arguments.
   Typed options initially include `-skipIntro`, `-noSplash` and `-window`.
 - An advanced editor accepts one literal argument per nonblank line, rather
@@ -334,3 +343,45 @@ same exclusive checkout. Establish and run the core checks before extending
 the GUI. The final candidate must pass the complete gate. Remote integration
 is independently blocked pending push authorization and PR guards. No task is
 Done from a worker's completion message.
+
+## Revision3: GAME-001 scoped recovery and acceptance
+
+Originating incident remains M0-001; A1–A7 and all prior findings/evidence remain
+recorded. One independent recovery review and one revised design round precede
+the second bounded coding cycle. Current user routing selects Astra High for
+independent judgment, superseding the older local Max role pin. No source edits
+are eligible until independent review passes this exact revision.
+
+The supported scope is one serialization correction in LaunchPlanner plus
+regression tests. Retain discovery, original Steam paths, saved selection order,
+presets, native NSWorkspace transport, running-game guards, truthful handoff
+status and shared artwork UI. Do not reorder ACE/CBA, add dependency resolution,
+strip slashes, change game/Steam files or automatically launch a game.
+
+Tests must assert the full ordered argv, exact embedded quote bytes around the
+whole list, no shell escapes, original paths, and deduplication. Cover no selected
+content, one selected content item, and mixed Workshop/optional DLC; both game
+modes; spaces/no spaces, Unicode and trailing directory slashes. Retain unsafe
+separator, quotes, CR/LF and NUL rejection. Add an app-model boundary test that
+selects content, runs the fresh discovery preflight, captures the plan passed to
+the injected launch operation, and asserts the chosen bundle plus complete argv.
+This checks selection-to-handoff behavior without starting a real game.
+
+The independent full gate and review precede a local candidate commit. Runtime
+acceptance separately records candidate identity, selected preset/IDs, requested
+bundle and observed process argv. Verify both ACE and CBA in the game's loaded
+content listing or an engine log explicitly identifying them as loaded. A picture,
+NSWorkspace success, OS argv, or generic DLL log alone is insufficient. Verify
+optional DLC and both advertised modes separately before broad acceptance.
+If a mode or optional DLC cannot be exercised, keep that coverage explicitly
+open; do not claim full game compatibility from one successful preset.
+
+If automatic review prevents a diagnostic launch, continue authorized local
+construction and request concrete test permission once the committed build is
+ready. A user-started game may be inspected read-only. Never terminate a user
+game; let the player exit it before applying a changed configuration.
+
+Rejection criterion: if the embedded-quote candidate still omits content, retain
+its exact argv/evidence and return to the independent diagnosis with the remaining
+cycle allowance. Do not try guessed transport/path/order variations or weaken
+the loading acceptance to process handoff.

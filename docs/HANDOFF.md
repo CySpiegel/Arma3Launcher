@@ -1,65 +1,76 @@
 # Handoff
 
-The latest local test-drive code is the commit containing this A7 update on
-`issue/m0/001-foundation`; exact receipt:
-`.build/evidence/M0-001-A7-author/commit.txt`. Source manifest:
-`f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74`.
-Independent code review and full gate pass: 68 tests in 10 suites, strict
-formatting and Xcode Debug warnings-as-errors build. See QA-001-A7. Xcode's
-optional AppIntents metadata extraction warning is recorded in that report.
-The board owns task state. No source writer is active. The user confirmed the
-prior 1.5-second selection delay is fixed. A7 makes the visible artwork background
-follow the picture aspect ratio in the shared row/detail component.
+Active work: verify GAME-001 correction in the game. The user reproduced
+it with their ACE preset on the prior build and then closed the game. No game is
+currently expected running. Preserve ACE preset, Standard (Rosetta), selected ACE
+and CBA, SkipIntro/NoSplash on, Windowed off, System appearance. Do not restore
+earlier zero-selection/AppleSilicon state. The board owns exact task state.
 
-## Working behavior and remaining acceptance
+## Current work and checkpoint
 
-- Native Mac launcher locates the installed game and original Workshop directories,
-  presents optional/platform DLC separately, saves presets and generates native argv.
-- One artwork descriptor, reader and view serves Workshop and DLC. Actual local
-  diagnostics decode4Workshop logos and15Steam-cache DLC images. MissingCSLA has
-  no cached picture and correctly keeps a fallback. No addon copies or Steam writes.
-- Advanced panel remains visible; Light→System appearance mismatch is corrected.
-- Row-wide double-click waiting is removed. Identical successful settings saves
-  are deduplicated; failed saves retry. The user confirmed the click delay is
-  fixed. A7 also matches artwork boxes to picture proportions in the shared view.
-- Automatic mod dependency selection/ordering is not implemented. Selected order
-  is preserved. Actual in-game content loading and both game modes are unverified.
-- User visual/test-drive acceptance remains open. Do not mark the project done
-  merely because the app builds or the user has opened an earlier preview.
+Committed checkpoint: 1a4a77ce9acf0d15c834a0004a3e076918509903 on
+issue/m0/001-foundation. Source manifest
+f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74.
+A7 full gate and independent review passed: 68 tests / 10 suites, strict format
+and Xcode Debug warnings-as-errors build. Native screenshots verify proportional
+DLC and Workshop artwork backgrounds. Receipt:
+.build/evidence/M0-001-A7-author/native-final.json. The user confirmed earlier
+selection delay is fixed; artwork geometry user sign-off remains open.
 
-## App and verification
+A8 is implemented, frozen and independently verified under M0-001 revision4 and adopted ARCH-001r3 / AR-001-R3.
+Independent recovery review AR-GAME-001 identified an unsupported engine parsing
+assumption: one native argv value with spaces need not survive the eON Windows
+command-line bridge. Candidate correction adds actual double quotes around the
+whole -mod path list. Paths, saved order, preflight, transport and UI stay intact.
+No source writer is active. Independent QA-001-A8 passes; root full gate exit0:
+72tests/10suites, strict format and Xcode Debug warnings-as-errors. The new
+local candidate is the commit containing this update; exact receipt will be
+.build/evidence/M0-001-A8-author/commit.txt. Source manifest:
+5f1c05e727a47bccb16de286ee6ffb36c2dd69012aa1cc24a2d6bfcf5f4ffb82.
 
-App: `.build/DerivedData/Build/Products/Debug/Arma3Launcher.app`.
-Canonical gate: `bash scripts/gate.sh` from repository root. Direct execution
-requires normal Xcode package-cache access; approved escalation succeeded, while
-an earlier sandbox-only Xcode invocation exited74. No accepted failing baseline.
-Author artifacts are preserved under `.build/evidence/M0-001-A6-author/`; the
-root independent log is `.build/evidence/A6-independent-gate.log`.
+All seven prior attempts remain recorded. A8 is cycle2 attempt1, cumulative8.
+One scoped recovery design round has passed independent review (one draft, no
+corrections). Current user routing selects Astra High and supersedes the older
+local Max pin; actual High is recorded accurately. No pending architecture
+ratification decisions. ARCH-002r1 and ARCH-003r2 remain adopted and unchanged.
 
-Native UI uses CUA and full app-path selection. Do not select Dock (a prior call
-stalled over2hours) or repeat coordinate drag/click calls returning noWindowsAvailable.
-Accessibility-index interactions and direct app reopening work. Native captures
-are in the tool transcript; no generated image substitutes for a running app.
-Preserve the user's current configuration during further checks. Latest observed
-launch configuration:0content selections,0presets,AppleSilicon,SkipIntro/NoSplash on,
-Windowed off, empty advanced args,System appearance. No game was launched by us.
+## Verification and next step
 
-## Authority and workflow
+Canonical gate: bash scripts/gate.sh from repository root. No accepted failing
+baseline. Use approved escalation for normal Xcode package-cache access; sandbox
+only Xcode previously exited74. Gate internally writes A6-worker output, so copy
+raw logs/manifests into distinct A8 evidence folders. Xcode optional AppIntents
+metadata extraction warning is recorded, not a Swift compiler warning.
 
-User authorized building with the graph team, creating the private GitHub repo,
-local candidate commits, actual app launch, shared DLC/Workshop artwork and the
-click-latency correction. All addons must remain in Steam's original folders.
-Private repo:https://github.com/CySpiegel/Arma3Launcher. No source has been pushed;
-remote publication, merge and release require their own authorization.
-Milestone `milestone/m0`, default `main`, seed
-`a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7`. Candidate is not a remote integration.
+Source, independent review and root gate are preserved. Commit locally before
+asking user to inspect, then reopen
+.build/DerivedData/Build/Products/Debug/Arma3Launcher.app through CUA.
+Actual game loading requires positive in-game loaded-mod evidence for ACE+CBA;
+process argv, preview, PBO existence, logos and NSWorkspace handoff cannot prove
+it. Native mode and optional DLC require separate verification. Automatic
+approval review rejected root's baseline Play click for lack of explicit launch
+permission; no game was started by root and no bypass occurred. User subsequently
+clicked Play themselves and confirmed failure, then closed it. Finish corrected
+build before any further test-launch permission request.
 
-Adopted:ARCH-001r2/AR-001-R2, ARCH-002r1/AR-002-R1, ARCH-003r2/AR-003-R2.
-Current immutable packet:engineering/tasks/M0-001-R3.md. A7 preserves the incident
-counters and is the last assisted attempt; any further failed repair of this same
-incident requires the documented independent redesign review. A temporary
-Sol capacity error resumed the same model and attempt successfully.
+CUA: use exact full app path and accessibility indices. Do not select Dock
+(previous call stalled over2hours) or repeat coordinate actions failing with
+noWindowsAvailable. Reopening launcher preserves user settings. Never terminate
+the user's game. Native captures are in tool transcript; ignored receipts bind
+commit and binary hash.
 
-Next:reopen the committed build, finish native appearance/selection smoke, then
-hand it to the user for the requested test drive. Record their feedback in the
-board and TODO. Never infer visual approval or successful game loading from silence.
+## Product scope and remaining acceptance
+
+Read Steam/game/Workshop files in place. Never copy, move, stage, symlink or edit
+addons or Steam files. Shared artwork loader/view displays4Workshop and15cached
+DLC images; missingCSLA lacks cached picture and retains fallback. Advanced panel
+and appearance corrections remain verified. Automatic dependency selection/load
+ordering is not implemented; saved order is preserved. Broad game compatibility
+and user test-drive acceptance remain open.
+
+User authorized graph-team construction, private GitHub repo creation, local
+candidate commits and app previews. Private repo:
+https://github.com/CySpiegel/Arma3Launcher. No push, remote integration, release or
+paid signing authorization. No source pushed; user has been told local-only work
+lacks remote backup. Base/milestone seed a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7,
+milestone/m0, default main. Candidate commits are not milestone integration.

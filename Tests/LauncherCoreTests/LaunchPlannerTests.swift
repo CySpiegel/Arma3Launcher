@@ -15,10 +15,48 @@ import Testing
         let plan = try LaunchPlanner.makePlan(snapshot: snapshot, configuration: config)
         #expect(
             plan.arguments == [
-                "-p", "default", "-no-remote", "-mod=C:/Steam Folder/a;C:/Steam Folder/b",
+                "-p", "default", "-no-remote", "-mod=\"C:/Steam Folder/a;C:/Steam Folder/b\"",
                 "-skipIntro", "-window", "-hugePages", "-name=Player",
             ])
         #expect(plan.selectedContentIDs == ["workshop:a", "dlc:b"])
+    }
+
+    @Test func emptySelectionOmitsModForStandardMode() throws {
+        let plan = try LaunchPlanner.makePlan(
+            snapshot: readySnapshot(),
+            configuration: LaunchConfiguration(
+                mode: .standard, options: .init(skipIntro: false, noSplash: false, windowed: false)))
+        #expect(plan.applicationURL.lastPathComponent == "Arma 3.app")
+        #expect(plan.arguments == ["-p", "default", "-no-remote"])
+        #expect(!plan.arguments.contains { $0.hasPrefix("-mod=") })
+    }
+
+    @Test func singleNoSpacePathUsesLiteralQuotesWithoutBackslashes() throws {
+        let plan = try LaunchPlanner.makePlan(
+            snapshot: readySnapshot(content: [item("workshop:cba", "/mods/CBA")]),
+            configuration: LaunchConfiguration(
+                mode: .native, selectedContentIDs: ["workshop:cba"],
+                options: .init(skipIntro: false, noSplash: false, windowed: false)))
+        #expect(plan.arguments == ["-p", "default", "-no-remote", "-mod=\"C:/mods/CBA\""])
+    }
+
+    @Test func mixedUnicodeAndTrailingSlashPathsPreserveOrderAndDeduplicate() throws {
+        let snapshot = readySnapshot(content: [
+            item("dlc:contact", "/Steam Library/Ärma Contact/"),
+            item("workshop:ace", "/Workshop/463939057/"),
+        ])
+        let plan = try LaunchPlanner.makePlan(
+            snapshot: snapshot,
+            configuration: LaunchConfiguration(
+                mode: .standard,
+                selectedContentIDs: ["dlc:contact", "workshop:ace", "dlc:contact"],
+                options: .init(skipIntro: false, noSplash: false, windowed: false)))
+        #expect(
+            plan.arguments == [
+                "-p", "default", "-no-remote",
+                "-mod=\"C:/Steam Library/Ärma Contact/;C:/Workshop/463939057/\"",
+            ])
+        #expect(plan.selectedContentIDs == ["dlc:contact", "workshop:ace"])
     }
 
     @Test(arguments: ["-MOD=thing", "-ServerMod=x", "-P=other", "-NO-REMOTE", "-SkipIntro=false", "-WINDOW"])
@@ -98,7 +136,10 @@ private func readySnapshot(content: [ContentItem] = []) -> DiscoverySnapshot {
         directory: directory, libraryRoot: root,
         manifestURL: root.appending(path: "steamapps/appmanifest_107410.acf"), readiness: .ready,
         status: "ready",
-        bundles: [.init(mode: .native, url: directory.appending(path: "ArmA3 AS Native.app"))])
+        bundles: [
+            .init(mode: .native, url: directory.appending(path: "ArmA3 AS Native.app")),
+            .init(mode: .standard, url: directory.appending(path: "Arma 3.app")),
+        ])
     return DiscoverySnapshot(
         generation: 1,
         installation: SteamInstallation(

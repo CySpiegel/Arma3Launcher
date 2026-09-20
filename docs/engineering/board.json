@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "coordinator-managed",
-  "revision": 29,
+  "revision": 33,
   "coordination": {
     "run_phase": "Verifying",
     "execution_authorized": true,
@@ -180,9 +180,9 @@
     "command": "bash scripts/gate.sh",
     "working_directory": ".",
     "status": "pass-with-independent-code-review",
-    "execution_status": "68-tests-10-suites-exit0",
+    "execution_status": "72-tests-10-suites-exit0",
     "evidence_ids": [
-      "QA-001-A7"
+      "QA-001-A8"
     ]
   },
   "budget": {
@@ -408,7 +408,7 @@
       "kind": "development",
       "title": "First native configuration and launch checkpoint",
       "priority": 2,
-      "current_revision": 3,
+      "current_revision": 4,
       "stage": "Verifying",
       "required": true,
       "blockers": [],
@@ -416,8 +416,8 @@
         {
           "task": "ARCH-001",
           "type": "approved-contract",
-          "revision": 2,
-          "artifact_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+          "revision": 3,
+          "artifact_hash": "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb"
         }
       ],
       "revisions": [
@@ -813,6 +813,154 @@
             }
           ],
           "content_hash": "81d3c6a34691b600bc3c41aa339dad59e190b71a4f92f5df48dedc36d0e3fe5e"
+        },
+        {
+          "revision": 4,
+          "objective": "Correct Mac engine mod-list quoting and verify selection-to-handoff arguments",
+          "exclusions": [
+            "Steam/game writes",
+            "addon copying",
+            "remote push/merge",
+            "release",
+            "child agents"
+          ],
+          "permitted_paths_resources": [
+            "Package.swift",
+            "Sources/",
+            "Tests/",
+            "App/",
+            "Arma3Launcher.xcodeproj/",
+            "scripts/",
+            ".gitignore",
+            ".swift-format",
+            ".build/"
+          ],
+          "authoritative_inputs": {
+            "architecture": "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb",
+            "design_brief": "9dc7786f170196eb708b90675a3221ff44871d02c1609251a73066c4d1768798",
+            "task_packet": "ef4a54af37372fac49727d23a50f8e530fc964a2bb70b2e4b2af40c49c227797"
+          },
+          "architecture_binding": {
+            "design": "docs/specs/ARCH-001.md",
+            "revision": 3,
+            "sha256": "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb",
+            "review_id": "AR-001-R3",
+            "adopted_scope": "GAME-001 quoted mod value and boundary tests; unchanged first native checkpoint"
+          },
+          "dependencies": [
+            {
+              "task": "ARCH-001",
+              "type": "approved-contract",
+              "revision": 3,
+              "artifact_hash": "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb"
+            }
+          ],
+          "deliverables": [
+            "Xcode app project",
+            "Foundation Core package and tests",
+            "read-only diagnostics",
+            "functional native GUI",
+            "canonical gate and raw verification logs"
+          ],
+          "acceptance_criteria": [
+            {
+              "id": "A1",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A2",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A3",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A4",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A5",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A6",
+              "owner": "independent QA and lead; user visual",
+              "source": "ARCH-002 rev1 local artwork"
+            },
+            {
+              "id": "A7",
+              "owner": "independentQA/root/usernative",
+              "source": "ARCH-003 revision2"
+            }
+          ],
+          "check_plan": [
+            "canonical full gate",
+            "real read-only diagnostics",
+            "independent review",
+            "native light/dark and real-game evidence"
+          ],
+          "review_authority": "independent Sol QA; lead integrates; user visual acceptance",
+          "model_route": {
+            "agent_type": "sol_worker",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "fork_turns": "none",
+            "read_only": false
+          },
+          "limits": {
+            "minutes": 20,
+            "tool_calls": 60,
+            "code_attempt": 8,
+            "sol_repair_limit": 4,
+            "cycle": 2,
+            "cycle_attempt": 1
+          },
+          "git_binding": {
+            "milestone": "M0",
+            "milestone_branch": "milestone/m0",
+            "issue_branch": "issue/m0/001-foundation",
+            "base_sha": "a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7",
+            "worktree": "/Users/spiegel/Projects/Arma3Launcher",
+            "remote_pr": null
+          },
+          "bootstrap_exception": {
+            "authorized": true,
+            "evidence": "user authorized build 2026-09-19",
+            "scope": "establish minimal stack and full executable gate",
+            "acceptance_requires_actual_gate_pass": true
+          },
+          "adopted_by": "/root",
+          "adopted_at": "2026-09-20T03:26:03.506979+00:00",
+          "architecture_bindings": [
+            {
+              "design": "docs/specs/ARCH-001.md",
+              "revision": 3,
+              "sha256": "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb",
+              "review_id": "AR-001-R3",
+              "adopted_scope": "GAME-001 quoted mod value and boundary tests; unchanged first native checkpoint"
+            },
+            {
+              "design": "docs/specs/ARCH-002.md",
+              "revision": 1,
+              "sha256": "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+              "review_id": "AR-002-R1",
+              "adopted_scope": "local mod artwork and gate correction"
+            },
+            {
+              "design": "docs/specs/ARCH-003.md",
+              "revision": 2,
+              "sha256": "a49b591091f465fa9354f7cf5a0d93e19e1088cf301b0a04340515f8dac2ca6b",
+              "review_id": "AR-003-R2",
+              "adopted_scope": "shared local DLC and Workshop artwork and selection responsiveness"
+            }
+          ],
+          "content_hash": "b750e702ab04fa056711746a1257d3f2d027df59ec4a34471b470a7e52071913"
         }
       ],
       "attempts": [
@@ -1030,6 +1178,39 @@
           "advice": "Existing adopted ARCH-003 shared proportional artwork view; user explicitly requests picture-shaped boxes",
           "assisted_attempt": 3,
           "completed_at": "2026-09-20T03:13:02.345975+00:00"
+        },
+        {
+          "id": "M0-001-A8",
+          "task_revision": 4,
+          "stage": "redesigned-sol-repair",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A8",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "b750e702ab04fa056711746a1257d3f2d027df59ec4a34471b470a7e52071913",
+            "prior_candidate": "f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74",
+            "architectures": [
+              "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+              "a49b591091f465fa9354f7cf5a0d93e19e1088cf301b0a04340515f8dac2ca6b"
+            ]
+          },
+          "repair_ordinal": 7,
+          "status": "submitted",
+          "recorded_at": "2026-09-20T03:26:03.506979+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A8-author/source-sha256.txt",
+            "sha256": "5f1c05e727a47bccb16de286ee6ffb36c2dd69012aa1cc24a2d6bfcf5f4ffb82"
+          },
+          "cycle": 2,
+          "cycle_attempt": 1,
+          "cumulative_attempt": 8,
+          "design_round": 1,
+          "evidence_ids": [],
+          "completed_at": "2026-09-20T03:29:11.358716+00:00"
         }
       ],
       "findings": [
@@ -1209,15 +1390,15 @@
         "qa": "pass-local-candidate",
         "user_required": true,
         "user_status": "pending-test-drive",
-        "real_game_loading": "unverified",
+        "real_game_loading": "A7-user-reported-failure; A8-corrected-candidate-awaiting-runtime-verification",
         "native_click_latency": "user-confirmed-fixed"
       },
       "created_at": "2026-09-19T21:30:01.080729+00:00",
       "updated_at": "2026-09-19T21:41:07.477700+00:00",
       "local_candidate": {
-        "source_manifest_sha256": "f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74",
+        "source_manifest_sha256": "5f1c05e727a47bccb16de286ee6ffb36c2dd69012aa1cc24a2d6bfcf5f4ffb82",
         "branch": "issue/m0/001-foundation",
-        "commit_receipt": ".build/evidence/M0-001-A7-author/commit.txt",
+        "commit_receipt": ".build/evidence/M0-001-A8-author/commit.txt",
         "purpose": "local-test-drive; no remote merge or release"
       },
       "user_feedback": [
@@ -1225,6 +1406,11 @@
           "at": "2026-09-20T03:12:32.387708+00:00",
           "quote": "looks like you fixed it",
           "scope": "selection delay on committed575c546; not blanket game/UI acceptance"
+        },
+        {
+          "at": "2026-09-20T03:21:41.057794+00:00",
+          "quote": "also when launching with selected mods, the game does not actually launch with those mods",
+          "scope": "GAME-001; launch handoff is insufficient evidence of content loading"
         }
       ]
     }
@@ -1289,6 +1475,24 @@
       ],
       "invalidation": null,
       "evidence": "docs/engineering/reviews/AR-003-R2.md"
+    },
+    {
+      "id": "AR-001-R3",
+      "design": "docs/specs/ARCH-001.md",
+      "design_revision": 3,
+      "design_hash": "8f056f963775a5612311ab69ad71b79739f53e07169ea1a06dd6b780ac9ad7eb",
+      "author": "/root",
+      "reviewer": "/root/launch_contract_review",
+      "model": "gpt-6-astra",
+      "effort": "high",
+      "verdict": "pass",
+      "adopted": true,
+      "covered_tasks": [
+        "M0-001"
+      ],
+      "invalidation": null,
+      "evidence": "docs/engineering/reviews/AR-001-R3.md",
+      "adopted_at": "2026-09-20T03:26:03.506979+00:00"
     }
   ],
   "hook_capabilities": [
@@ -1660,6 +1864,24 @@
       "kind": "tiny-candidate-approved",
       "attempt": "M0-001-A7",
       "note": "Primary shared artwork background adjustment reviewed independently; full gate passes. User selection-latency confirmation retained."
+    },
+    {
+      "at": "2026-09-20T03:21:41.057794+00:00",
+      "kind": "launch-acceptance-failed",
+      "task": "M0-001",
+      "note": "Committed A7 checkpoint retained. Prior seven implementation attempts preserved; no further coding until scoped independent recovery review and revised launch/validation contract. Current user automatic routing selects Astra High and supersedes older Max role pin; no claim of Max execution. Root may author narrow design, fresh independent reviewer approves. Read-only investigation only."
+    },
+    {
+      "at": "2026-09-20T03:26:03.506979+00:00",
+      "kind": "revised-launch-contract-adopted-and-A8-claimed",
+      "task": "M0-001",
+      "note": "Independent root-cause review AR-GAME-001 and exact revision3 AR-001-R3 pass. Single scoped redesign round; second code cycle first attempt, cumulative8. All previous seven preserved. User started baseline game and reports mods absent; no runtime fix claim."
+    },
+    {
+      "at": "2026-09-20T03:31:11.252632+00:00",
+      "kind": "A8-independent-gate-and-review-pass",
+      "task": "M0-001",
+      "note": "Root gate exit0 72tests10suites; independent Sol QA pass exact source. Next authorized local candidate commit, reopen launcher, user actual-game test. No runtime compatibility claim."
     }
   ],
   "git_workflow": {
@@ -1746,6 +1968,15 @@
       "candidate_manifest_sha256": "f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74",
       "verdict": "pass",
       "evidence": "docs/engineering/reviews/QA-001-A7.md"
+    },
+    {
+      "id": "QA-001-A8",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "5f1c05e727a47bccb16de286ee6ffb36c2dd69012aa1cc24a2d6bfcf5f4ffb82",
+      "verdict": "pass",
+      "evidence": "docs/engineering/reviews/QA-001-A8.md"
     }
   ],
   "hard_limit_exceptions": []

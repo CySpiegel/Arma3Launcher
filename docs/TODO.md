@@ -9,8 +9,10 @@ Live execution belongs to `engineering/board.json`.
   user visual feedback on that adjustment remains pending.
   CUA coordinate actions could not verify
   minimum-size resizing or checkbox clicks; do not record those as passed.
-- GAME-001 — Actual in-game loading of selected Workshop and optional DLC, and
-  both advertised Mac game modes, remain unverified.
+- GAME-001 — User reports selected mods absent on A7. A8 quoting correction
+  and model/planner tests pass independent review/full gate. Actual in-game
+  ACE/CBA loading remains to be verified on the new committed build; optional
+  DLC and both game modes require separate positive evidence.
 - ORDER-001 — Automatic dependency selection and load ordering are not implemented;
   current launch order is the selection/preset order. Previously disclosed to user.
 - PUB-001 — Source remains local; GitHub repository creation did not authorize push

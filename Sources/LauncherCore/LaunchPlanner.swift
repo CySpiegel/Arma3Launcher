@@ -58,7 +58,7 @@ public enum LaunchPlanner {
         }
 
         var arguments = ["-p", "default", "-no-remote"]
-        if !paths.isEmpty { arguments.append("-mod=\(paths.joined(separator: ";"))") }
+        if !paths.isEmpty { arguments.append("-mod=\"\(paths.joined(separator: ";"))\"") }
         if configuration.options.skipIntro { arguments.append("-skipIntro") }
         if configuration.options.noSplash { arguments.append("-noSplash") }
         if configuration.options.windowed { arguments.append("-window") }

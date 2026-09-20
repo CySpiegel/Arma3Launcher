@@ -39,6 +39,42 @@ import Testing
         #expect(model.handoffState == .handedOff("handed off"))
     }
 
+    @Test func playHandsOffCompleteQuotedStandardPlanAfterFreshDiscovery() async throws {
+        let scans = ScanHarness()
+        let launches = LaunchHarness()
+        let model = testModel(scans: scans, launch: { try await launches.launch($0) })
+        let ace = URL(
+            filePath:
+                "/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/463939057/"
+        )
+        let cba = URL(
+            filePath:
+                "/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/450814997/"
+        )
+        model.configuration = LaunchConfiguration(
+            mode: .standard, selectedContentIDs: ["workshop:ace", "workshop:cba"],
+            options: .init(skipIntro: true, noSplash: true, windowed: false))
+        model.play()
+        await scans.waitForCount(1)
+        await scans.finish(
+            generation: 1,
+            snapshot: snapshot(
+                generation: 1, readyGame: true,
+                items: [item("ace", ace), item("cba", cba)]))
+        await launches.waitUntilStarted()
+        let plan = try #require(await launches.plan)
+        #expect(plan.applicationURL == URL(filePath: "/tmp/game/standard.app"))
+        #expect(plan.selectedContentIDs == ["workshop:ace", "workshop:cba"])
+        #expect(
+            plan.arguments == [
+                "-p", "default", "-no-remote",
+                "-mod=\"C:/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/463939057/;C:/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/450814997/\"",
+                "-skipIntro", "-noSplash",
+            ])
+        await launches.finish("handed off")
+        await eventually { model.handoffState == .handedOff("handed off") }
+    }
+
     @Test func presetAndCurrentConfigurationPersistAcrossModelRelaunch() async throws {
         try await withTemporaryDirectoryAsync { directory in
             let store = ConfigurationStore(url: directory.appending(path: "settings.json"))
@@ -251,7 +287,9 @@ private actor ScanHarness {
 private actor LaunchHarness {
     private var continuation: CheckedContinuation<String, Error>?
     private var started = false
-    func launch(_: LaunchPlan) async throws -> String {
+    private(set) var plan: LaunchPlan?
+    func launch(_ plan: LaunchPlan) async throws -> String {
+        self.plan = plan
         started = true
         return try await withCheckedThrowingContinuation { continuation = $0 }
     }
