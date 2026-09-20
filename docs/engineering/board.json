@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "coordinator-managed",
-  "revision": 33,
+  "revision": 35,
   "coordination": {
     "run_phase": "Verifying",
     "execution_authorized": true,
@@ -1390,7 +1390,7 @@
         "qa": "pass-local-candidate",
         "user_required": true,
         "user_status": "pending-test-drive",
-        "real_game_loading": "A7-user-reported-failure; A8-corrected-candidate-awaiting-runtime-verification",
+        "real_game_loading": "user-confirmed-ACE-and-CBA-Standard-on-5c4ada5; native-mode-and-DLC-unverified",
         "native_click_latency": "user-confirmed-fixed"
       },
       "created_at": "2026-09-19T21:30:01.080729+00:00",
@@ -1411,6 +1411,11 @@
           "at": "2026-09-20T03:21:41.057794+00:00",
           "quote": "also when launching with selected mods, the game does not actually launch with those mods",
           "scope": "GAME-001; launch handoff is insufficient evidence of content loading"
+        },
+        {
+          "at": "2026-09-20T03:40:59.148314+00:00",
+          "quote": "Both appear",
+          "scope": "ACE and CBA in-game on committed5c4ada5 Standard Rosetta; no implied native/DLC acceptance"
         }
       ]
     }
@@ -1882,6 +1887,18 @@
       "kind": "A8-independent-gate-and-review-pass",
       "task": "M0-001",
       "note": "Root gate exit0 72tests10suites; independent Sol QA pass exact source. Next authorized local candidate commit, reopen launcher, user actual-game test. No runtime compatibility claim."
+    },
+    {
+      "at": "2026-09-20T03:40:59.148314+00:00",
+      "kind": "user-runtime-success-and-publication-authorized",
+      "task": "M0-001",
+      "note": "User confirms both ACE/CBA appear in game, then asks Build and publish on my github. Prepare universal Release zip, source push and beta release; preserve private visibility, no milestone acceptance inferred."
+    },
+    {
+      "at": "2026-09-20T03:45:12.058109+00:00",
+      "kind": "beta-published-and-verified",
+      "task": "M0-001",
+      "note": "Atomic initial source/main/milestone push successful. Draft PR1 correct target. Prerelease v0.1.0-beta.1 points exact5c4ada5; uploaded ZIP/SHA256SUMS downloaded and verified. Private visibility retained. Final docs reflect user-confirmed StandardACE/CBA and runtime limits; no milestone merge."
     }
   ],
   "git_workflow": {
@@ -1979,5 +1996,33 @@
       "evidence": "docs/engineering/reviews/QA-001-A8.md"
     }
   ],
-  "hard_limit_exceptions": []
+  "hard_limit_exceptions": [],
+  "publication": {
+    "status": "published-and-download-verified",
+    "authorized_by": "user: Build and publish on my github",
+    "repository": "CySpiegel/Arma3Launcher",
+    "visibility": "private",
+    "tag": "v0.1.0-beta.1",
+    "source_branch": "issue/m0/001-foundation",
+    "pr_target": "milestone/m0",
+    "release_kind": "prerelease",
+    "source_commit": "5c4ada5260c48992349b7131b459cf6957e7970d",
+    "source_manifest_sha256": "5f1c05e727a47bccb16de286ee6ffb36c2dd69012aa1cc24a2d6bfcf5f4ffb82",
+    "authorization_at": "2026-09-20T03:40:59.148314+00:00",
+    "merge_authorized": false,
+    "release_url": "https://github.com/CySpiegel/Arma3Launcher/releases/tag/v0.1.0-beta.1",
+    "pr_url": "https://github.com/CySpiegel/Arma3Launcher/pull/1",
+    "release_tag_commit": "5c4ada5260c48992349b7131b459cf6957e7970d",
+    "archive_sha256": "82d90f5d445b9df2f80cd60aa3609b3a22fbf3d86d4232e83a2b4adf8fe13f1b",
+    "archive_size": 834052,
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "minimum_macos": "14.0",
+    "signature": "adhoc-valid-unnotarized",
+    "download_verified": true,
+    "published_at": "2026-09-20T03:45:12.058109+00:00",
+    "evidence": "docs/releases/v0.1.0-beta.1.md"
+  }
 }

@@ -21,8 +21,11 @@ exist. Conversation, lookups and tiny edits need no graph lifecycle.
   and asked the lead to create the GitHub repo. This includes the local project,
   stack/gate bootstrap, tests, native app verification, and local candidate
   commits. GitHub repo creation and local Git initialization are complete.
-- Push, remote integration, release/deploy, paid signing, unrelated services,
-  global settings, and permission weakening are not authorized by construction.
+- The user subsequently authorized "Build and publish on my github" after
+  confirming ACE/CBA loading. This authorizes pushing this candidate, a draft
+  issue-to-milestone PR, and a downloadable GitHub beta release in the existing
+  private repository. Preserve visibility. Milestone merge, paid signing,
+  unrelated services, global settings and permission weakening remain separate.
 - Every coding increment, including scaffold, tests, and bootstrap, must refer
   to an adopted architecture revision and an independent passing gap/issue
   review covering its scope before dispatch. Documentation setup is not that

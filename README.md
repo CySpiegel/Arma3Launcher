@@ -77,24 +77,43 @@ Local tooling checked on 2026-09-19: `xcode-select -p` resolves to
 `/Applications/Xcode.app/Contents/Developer`; `xcodebuild -version` succeeds with
 Xcode 27.0, build 27A266a. This is a tool-availability check, not a product build.
 
+## Test build
+
+Download the macOS app from [GitHub Releases](https://github.com/CySpiegel/Arma3Launcher/releases).
+The first release, **v0.1.0-beta.1**, is a test build for macOS14 or later.
+It includes Apple silicon and Intel binaries. Unzip the download and move
+`Arma3Launcher.app` to Applications. Steam and the Mac version of Arma3 must
+already be installed. Workshop addons stay in their original Steam folders.
+
+The app is ad-hoc signed and not Apple-notarized. macOS may require approval
+under System Settings → Privacy & Security on first launch; see
+[Apple’s app-opening guidance](https://support.apple.com/en-us/102445). No paid signing
+identity, installer or privileged helper is included.
+
 ## Project state
 
-The local native test candidate is ready for user acceptance. Advanced-panel and
-appearance-transition defects are repaired. Workshop mods and DLC use one shared
-artwork pipeline and thumbnail view; local checks decode four Workshop logos and
-15 DLC/platform images. Missing artwork keeps a fallback. Single-click row selection
-no longer waits for a double-click gesture, and duplicate settings writes are suppressed.
+The native test build has searchable Workshop and DLC lists, presets, launch
+options and a shared artwork interface. Local checks decode four Workshop logos
+and15cached DLC/platform images; missing artwork keeps a fallback. Artwork boxes
+follow their pictures' proportions. Advanced-panel and appearance issues are
+repaired, and the user has confirmed the selection delay is fixed.
 
-Independent review and `bash scripts/gate.sh` pass with68tests across10suites,
-strict formatting and an Xcode Debug warnings-as-errors build. Actual game loading
-and the user's perception of click responsiveness still require test-drive feedback.
-Automatic mod dependency management/order is not implemented; selected order is retained.
+Independent review and `bash scripts/gate.sh` pass with72tests across10suites,
+strict formatting and an Xcode Debug warnings-as-errors build. The user confirmed
+that both ACE and CBA now appear in the game when launched with their preset
+in Standard (Rosetta) mode. Quoted mod values preserve Steam paths with spaces.
+Experimental Apple silicon game mode, optional DLC combinations and older/Intel
+macOS runtime coverage remain to be tested separately. A universal build does
+not establish runtime testing on both architectures.
 
-Local issue branch:`issue/m0/001-foundation`. Private repository:
-[CySpiegel/Arma3Launcher](https://github.com/CySpiegel/Arma3Launcher).
-No source has been pushed. Stack:Swift6,SwiftUI,Foundation Core; macOS14 minimum.
-See [HANDOFF](docs/HANDOFF.md), [workflow](docs/engineering/WORKFLOW.md) and the
-[board](docs/engineering/board.json) for exact evidence and remaining acceptance.
+Automatic dependency selection and load ordering are not implemented; the saved
+selection order is retained. DLC installation does not establish account ownership.
+
+Source candidate branch: [issue/m0/001-foundation](https://github.com/CySpiegel/Arma3Launcher/tree/issue/m0/001-foundation).
+This beta is published from the reviewed candidate; milestone acceptance remains
+open. Stack:Swift6,SwiftUI,Foundation Core. See [HANDOFF](docs/HANDOFF.md),
+[workflow](docs/engineering/WORKFLOW.md) and the [board](docs/engineering/board.json)
+for exact evidence and remaining acceptance.
 
 ## Local development
 
