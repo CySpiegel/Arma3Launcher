@@ -1,0 +1,1691 @@
+{
+  "schema_version": 1,
+  "mode": "coordinator-managed",
+  "revision": 26,
+  "coordination": {
+    "run_phase": "Verifying",
+    "execution_authorized": true,
+    "dispatch_paused": false,
+    "cancel_state": "not-canceled",
+    "active_coordinator": "/root",
+    "restart_reconciliation": {
+      "required_before_dispatch": true,
+      "status": "not-required-no-prior-claims",
+      "claim_process_workspace_and_effects": []
+    },
+    "authorization_evidence": "2026-09-19 user: ok lets make it, use the graph team; unless you can make the repo"
+  },
+  "repository": {
+    "id": "Arma3Launcher",
+    "local_path": "/Users/spiegel/Projects/Arma3Launcher",
+    "authorized_refs": [
+      "issue/m0/001-foundation"
+    ],
+    "version_control_status": "initialized",
+    "remote": "https://github.com/CySpiegel/Arma3Launcher",
+    "remote_visibility": "private-verified-gh-repo-view"
+  },
+  "sources": {
+    "execution_authority": "docs/engineering/board.json",
+    "controller_projection": null,
+    "policy": "docs/engineering/WORKFLOW.md",
+    "source_and_approved_docs": "git",
+    "resume": "docs/HANDOFF.md",
+    "deferred_or_user_only": "docs/TODO.md"
+  },
+  "policy": {
+    "architecture_review_required_before_coding": true,
+    "max_child_workers": 2,
+    "integration_lanes": 1,
+    "built_unintegrated_wip_limit": 2,
+    "ready_order": [
+      "qa",
+      "repair",
+      "integration",
+      "development"
+    ],
+    "fairness_bypass_limit": 3,
+    "push_requires_separate_authorization": true,
+    "deploy_requires_separate_authorization": true,
+    "model_routes": {
+      "primary": "keep-selected-model-and-effort",
+      "routine": {
+        "agent_type": "sol_worker",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "fork_turns": "none",
+        "read_only": false
+      },
+      "consequential": {
+        "agent_type": "astra",
+        "model": "gpt-6-astra",
+        "reasoning_effort": "high",
+        "fork_turns": "none",
+        "read_only": true
+      },
+      "independent_review": {
+        "agent_type": "sol_worker",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "fork_turns": "none",
+        "read_only": true
+      },
+      "redesign": {
+        "agent_type": "default",
+        "model": "gpt-6-astra",
+        "reasoning_effort": "max",
+        "fork_turns": "none",
+        "read_only": true
+      },
+      "redesign_review": {
+        "agent_type": "default",
+        "model": "gpt-6-astra",
+        "reasoning_effort": "max",
+        "fork_turns": "none",
+        "read_only": true
+      },
+      "design_document_writer": {
+        "agent_type": "sol_worker",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "fork_turns": "none",
+        "read_only": false
+      },
+      "command_execution": "direct-tools-by-responsible-agent; raw-output; no-LLM-runner",
+      "silent_substitution": false
+    },
+    "max_non_coding_repairs_after_initial_rejection_per_revision": 2,
+    "coding_standards": {
+      "pattern_register_required_before_coding": true,
+      "single_responsibility_functions": "whenever-practical; justified cohesive orchestration/algorithms allowed",
+      "reusable_helpers": "cohesive purpose/domain libraries with clear contracts and tests",
+      "physical_line_soft_limit": 800,
+      "physical_line_hard_limit": 1400,
+      "include_blank_and_comment_lines": true,
+      "handwritten_tests_and_scripts_in_scope": true,
+      "source_scope": "ARCH-001 rev2: Sources Tests App Package.swift and scripts handwritten Swift/sh/py; generated metadata/build/docs excluded",
+      "explicit_exclusions_required": true,
+      "hard_limit_exception_authority": "user-only",
+      "hard_limit_exception_requires_lead_options_and_recommendation": true,
+      "automatic_hard_limit_waiver": false,
+      "line_gate_runtime": "not-installed"
+    },
+    "code_review": {
+      "lead_scheduled_automatically": true,
+      "triggers": [
+        "issue-candidate-before-merge",
+        "material-repair-or-integration-delta",
+        "milestone-promotion"
+      ],
+      "independent_of_author": true,
+      "default_reviewers": 1,
+      "max_parallel_reviewers": 2,
+      "unattended_controller_verified": false
+    },
+    "coding_recovery": {
+      "coordinator": "lead",
+      "automatic_within_authorized_active_session": true,
+      "unattended_controller_verified": false,
+      "stage_order": [
+        "sol_repair",
+        "astra_assisted_sol_repair"
+      ],
+      "attempts_per_stage_per_cycle": {
+        "sol_repair": 4,
+        "astra_assisted_sol_repair": 3
+      },
+      "repairs_after_initial_per_stage": {
+        "sol_repair": 3,
+        "astra_assisted_sol_repair": 2
+      },
+      "implementation_model": "gpt-5.6-sol",
+      "implementation_effort": "medium",
+      "diagnostic_model": "gpt-6-astra",
+      "diagnostic_effort": "high",
+      "max_diagnostic_advice_calls_per_cycle": 2,
+      "max_implementation_attempts_per_cycle": 7,
+      "max_coding_cycles_per_incident": 2,
+      "max_implementation_attempts_per_incident": 14,
+      "max_redesign_rounds_per_incident": 1,
+      "max_design_drafts_per_redesign_round": 2,
+      "max_idempotent_infrastructure_retries_per_action": 2,
+      "no_progress_consecutive_attempts": 2,
+      "architecture_review_before_redesign": true,
+      "independent_review_and_adoption_before_code_resumes": true,
+      "redesign_model": "gpt-6-astra",
+      "redesign_effort": "max",
+      "advisors_read_only": true,
+      "reset_counts_on_revision_or_resume": false,
+      "command_execution": "direct-tools-raw-output",
+      "model_promotion_grants_git_promotion": false
+    }
+  },
+  "controller_capabilities": {
+    "status": "not-present",
+    "atomic_claims_and_fencing": "unverified",
+    "immutable_revisions_and_stale_rejection": "unverified",
+    "dependency_invalidation": "unverified",
+    "evidence_binding": "unverified",
+    "budget_accounting": "unverified",
+    "cancellation_and_recovery": "unverified",
+    "effect_reconciliation": "unverified",
+    "integration_ownership": "coordinator-serialized",
+    "adapter_model_effort_support": "Sol Medium and Astra High explicitly pinned dispatches accepted; Max/effective role sandbox unverified",
+    "limitations": [
+      "File coordination does not provide durable atomic multi-session claims, lease fencing, crash recovery, or exactly-once effects.",
+      "Only the main lead may serialize claims, dispatch, submissions, and board writes."
+    ]
+  },
+  "gate": {
+    "command": "bash scripts/gate.sh",
+    "working_directory": ".",
+    "status": "independent-pass",
+    "execution_status": "68-tests-10-suites-exit0",
+    "evidence_ids": [
+      "QA-001-A6"
+    ]
+  },
+  "budget": {
+    "authorized": null,
+    "unit": null,
+    "verification_reserve": "one reviewer slot; full gate and review before acceptance",
+    "reserved": null,
+    "measured_used": null,
+    "estimated_used": null,
+    "unknown_usage": true,
+    "enforcement": "packet time/tool/concurrency/attempt limits; no token/cost telemetry"
+  },
+  "tasks": [
+    {
+      "id": "ARCH-001",
+      "kind": "architecture",
+      "title": "Review first native checkpoint architecture",
+      "priority": 1,
+      "current_revision": 2,
+      "stage": "Done",
+      "required": true,
+      "blockers": [],
+      "dependencies": [],
+      "revisions": [
+        {
+          "revision": 1,
+          "content_hash": "9ffde5c84723acb176f59284518a01ab9a319be7b1fb56183c09d9d4da6fdb49",
+          "objective": "Independently review ARCH-001 rev1 for first native checkpoint construction",
+          "exclusions": [
+            "code writes",
+            "architecture self-approval"
+          ],
+          "permitted_paths_resources": [
+            "read-only repository and scoped platform evidence"
+          ],
+          "authoritative_inputs": [
+            "docs/specs/ARCH-001.md",
+            "docs/specs/design-brief.md",
+            "docs/engineering/evidence/installation-2026-09-19.md"
+          ],
+          "deliverables": [
+            "independent findings and pass/changes-required verdict"
+          ],
+          "acceptance_criteria": [
+            {
+              "id": "AR-1",
+              "owner": "independent Astra reviewer",
+              "criterion": "No unresolved blocking gaps for A1-A5 scope"
+            }
+          ],
+          "check_plan": [
+            "verify design SHA",
+            "review requirements/contracts/risks/acceptance"
+          ],
+          "review_authority": "independent reviewer",
+          "model_route": {
+            "agent_type": "astra",
+            "model": "gpt-6-astra",
+            "reasoning_effort": "high",
+            "fork_turns": "none",
+            "read_only": true
+          },
+          "limits": {
+            "minutes": 12,
+            "tool_calls": 30,
+            "noncoding_repairs_remaining": 2
+          },
+          "adopted_by": "/root",
+          "adopted_at": "2026-09-19T21:30:01.080729+00:00"
+        },
+        {
+          "revision": 2,
+          "content_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+          "objective": "Independently re-review ARCH-001 rev2 and AR1 dispositions",
+          "exclusions": [
+            "code writes",
+            "architecture self-approval"
+          ],
+          "permitted_paths_resources": [
+            "read-only repository and scoped platform evidence"
+          ],
+          "authoritative_inputs": [
+            "docs/specs/ARCH-001.md",
+            "docs/specs/design-brief.md",
+            "docs/engineering/evidence/installation-2026-09-19.md"
+          ],
+          "deliverables": [
+            "independent findings and pass/changes-required verdict"
+          ],
+          "acceptance_criteria": [
+            {
+              "id": "AR-1",
+              "owner": "independent Astra reviewer",
+              "criterion": "No unresolved blocking gaps for A1-A5 scope"
+            }
+          ],
+          "check_plan": [
+            "verify design SHA",
+            "review requirements/contracts/risks/acceptance"
+          ],
+          "review_authority": "independent reviewer",
+          "model_route": {
+            "agent_type": "astra",
+            "model": "gpt-6-astra",
+            "reasoning_effort": "high",
+            "fork_turns": "none",
+            "read_only": true
+          },
+          "limits": {
+            "minutes": 12,
+            "tool_calls": 30,
+            "noncoding_repairs_remaining": 1
+          },
+          "adopted_by": "/root",
+          "adopted_at": "2026-09-19T21:37:53.803313+00:00"
+        }
+      ],
+      "attempts": [
+        {
+          "id": "ARCH-001-R1",
+          "task_revision": 1,
+          "stage": "architecture-review",
+          "author": "/root/architecture_review",
+          "role": "astra",
+          "model": "gpt-6-astra",
+          "effort": "high",
+          "claim": "lead-serialized-ARCH-001-R1",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "design": "9ffde5c84723acb176f59284518a01ab9a319be7b1fb56183c09d9d4da6fdb49"
+          },
+          "repair_ordinal": 0,
+          "status": "changes-required",
+          "started_at": "2026-09-19T21:31:38.581991+00:00",
+          "evidence_ids": [
+            "AR-001-R1"
+          ],
+          "completed_at": "2026-09-19T21:37:53.803313+00:00"
+        },
+        {
+          "id": "ARCH-001-R2",
+          "task_revision": 2,
+          "stage": "architecture-review",
+          "author": "/root/architecture_review",
+          "role": "astra",
+          "model": "gpt-6-astra",
+          "effort": "high",
+          "claim": "lead-serialized-ARCH-001-R2",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "design": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+          },
+          "repair_ordinal": 1,
+          "status": "pass",
+          "recorded_at": "2026-09-19T21:37:53.803313+00:00",
+          "evidence_ids": [
+            "AR-001-R2"
+          ],
+          "completed_at": "2026-09-19T21:41:07.477700+00:00"
+        }
+      ],
+      "findings": [
+        {
+          "id": "AR1-B1",
+          "severity": "blocking",
+          "criterion": "AR-1",
+          "disposition": "resolved-in-design",
+          "evidence": "docs/engineering/reviews/AR-001-R1.md",
+          "verification_evidence": "AR-001-R2"
+        },
+        {
+          "id": "AR1-B2",
+          "severity": "blocking",
+          "criterion": "AR-1",
+          "disposition": "resolved-in-design",
+          "evidence": "docs/engineering/reviews/AR-001-R1.md",
+          "verification_evidence": "AR-001-R2"
+        },
+        {
+          "id": "AR1-N1",
+          "severity": "nonblocking",
+          "criterion": "AR-1",
+          "disposition": "resolved-in-design",
+          "evidence": "docs/engineering/reviews/AR-001-R1.md",
+          "verification_evidence": "AR-001-R2"
+        },
+        {
+          "id": "AR1-N2",
+          "severity": "nonblocking",
+          "criterion": "AR-1",
+          "disposition": "retained-integration-obligation",
+          "evidence": "docs/engineering/reviews/AR-001-R1.md",
+          "verification_evidence": "AR-001-R2"
+        },
+        {
+          "id": "AR1-N3",
+          "severity": "nonblocking",
+          "criterion": "AR-1",
+          "disposition": "resolved-in-design",
+          "evidence": "docs/engineering/reviews/AR-001-R1.md",
+          "verification_evidence": "AR-001-R2"
+        },
+        {
+          "id": "AR1-N4",
+          "severity": "nonblocking",
+          "criterion": "AR-1",
+          "disposition": "resolved-in-design",
+          "evidence": "docs/engineering/reviews/AR-001-R1.md",
+          "verification_evidence": "AR-001-R2"
+        }
+      ],
+      "acceptance": {
+        "qa": "pass",
+        "user_required": false,
+        "reviewer": "/root/architecture_review",
+        "reviewed_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+      },
+      "created_at": "2026-09-19T21:30:01.080729+00:00",
+      "updated_at": "2026-09-19T21:37:53.803313+00:00"
+    },
+    {
+      "id": "M0-001",
+      "kind": "development",
+      "title": "First native configuration and launch checkpoint",
+      "priority": 2,
+      "current_revision": 3,
+      "stage": "Verifying",
+      "required": true,
+      "blockers": [],
+      "dependencies": [
+        {
+          "task": "ARCH-001",
+          "type": "approved-contract",
+          "revision": 2,
+          "artifact_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+        }
+      ],
+      "revisions": [
+        {
+          "revision": 1,
+          "objective": "Build first native test application including gate/bootstrap, Core and GUI",
+          "exclusions": [
+            "Steam/game writes",
+            "addon copying",
+            "remote push/merge",
+            "release",
+            "child agents"
+          ],
+          "permitted_paths_resources": [
+            "Package.swift",
+            "Sources/",
+            "Tests/",
+            "App/",
+            "Arma3Launcher.xcodeproj/",
+            "scripts/",
+            ".gitignore",
+            ".swift-format",
+            ".build/"
+          ],
+          "authoritative_inputs": {
+            "architecture": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "design_brief": "9dc7786f170196eb708b90675a3221ff44871d02c1609251a73066c4d1768798",
+            "task_packet": "e3c377113b2e89a36018a257c49971b29955663970aeffa8c035aadf314b4971"
+          },
+          "architecture_binding": {
+            "design": "docs/specs/ARCH-001.md",
+            "revision": 2,
+            "sha256": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "review_id": "AR-001-R2",
+            "adopted_scope": "M0-001 A1-A5 first native checkpoint"
+          },
+          "dependencies": [
+            {
+              "task": "ARCH-001",
+              "type": "approved-contract",
+              "revision": 2,
+              "artifact_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+            }
+          ],
+          "deliverables": [
+            "Xcode app project",
+            "Foundation Core package and tests",
+            "read-only diagnostics",
+            "functional native GUI",
+            "canonical gate and raw verification logs"
+          ],
+          "acceptance_criteria": [
+            {
+              "id": "A1",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A2",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A3",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A4",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A5",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            }
+          ],
+          "check_plan": [
+            "canonical full gate",
+            "real read-only diagnostics",
+            "independent review",
+            "native light/dark and real-game evidence"
+          ],
+          "review_authority": "independent Sol QA; lead integrates; user visual acceptance",
+          "model_route": {
+            "agent_type": "sol_worker",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "fork_turns": "none",
+            "read_only": false
+          },
+          "limits": {
+            "minutes": 45,
+            "tool_calls": 120,
+            "code_attempt": 1,
+            "sol_repair_limit": 4
+          },
+          "git_binding": {
+            "milestone": "M0",
+            "milestone_branch": "milestone/m0",
+            "issue_branch": "issue/m0/001-foundation",
+            "base_sha": "a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7",
+            "worktree": "/Users/spiegel/Projects/Arma3Launcher",
+            "remote_pr": null
+          },
+          "bootstrap_exception": {
+            "authorized": true,
+            "evidence": "user authorized build 2026-09-19",
+            "scope": "establish minimal stack and full executable gate",
+            "acceptance_requires_actual_gate_pass": true
+          },
+          "adopted_by": "/root",
+          "adopted_at": "2026-09-19T21:41:07.477700+00:00",
+          "content_hash": "84dc54cf70f31ffaa687dd95dcdf5019f1736422bbc43bfddcb35ba769256649"
+        },
+        {
+          "revision": 2,
+          "objective": "First native checkpoint with local mod artwork and independently reviewed repairs",
+          "exclusions": [
+            "Steam/game writes",
+            "addon copying",
+            "remote push/merge",
+            "release",
+            "child agents"
+          ],
+          "permitted_paths_resources": [
+            "Package.swift",
+            "Sources/",
+            "Tests/",
+            "App/",
+            "Arma3Launcher.xcodeproj/",
+            "scripts/",
+            ".gitignore",
+            ".swift-format",
+            ".build/"
+          ],
+          "authoritative_inputs": {
+            "architecture": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "design_brief": "9dc7786f170196eb708b90675a3221ff44871d02c1609251a73066c4d1768798",
+            "task_packet": "e31dd7dc32114e83e2233cc12df121e087fe9949bcecdd68d656a493ada714a5"
+          },
+          "architecture_binding": {
+            "design": "docs/specs/ARCH-001.md",
+            "revision": 2,
+            "sha256": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "review_id": "AR-001-R2",
+            "adopted_scope": "M0-001 A1-A5 first native checkpoint"
+          },
+          "dependencies": [
+            {
+              "task": "ARCH-001",
+              "type": "approved-contract",
+              "revision": 2,
+              "artifact_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+            }
+          ],
+          "deliverables": [
+            "Xcode app project",
+            "Foundation Core package and tests",
+            "read-only diagnostics",
+            "functional native GUI",
+            "canonical gate and raw verification logs"
+          ],
+          "acceptance_criteria": [
+            {
+              "id": "A1",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A2",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A3",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A4",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A5",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A6",
+              "owner": "independent QA and lead; user visual",
+              "source": "ARCH-002 rev1 local artwork"
+            }
+          ],
+          "check_plan": [
+            "canonical full gate",
+            "real read-only diagnostics",
+            "independent review",
+            "native light/dark and real-game evidence"
+          ],
+          "review_authority": "independent Sol QA; lead integrates; user visual acceptance",
+          "model_route": {
+            "agent_type": "sol_worker",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "fork_turns": "none",
+            "read_only": false
+          },
+          "limits": {
+            "minutes": 45,
+            "tool_calls": 140,
+            "code_attempt": 2,
+            "sol_repair_limit": 4
+          },
+          "git_binding": {
+            "milestone": "M0",
+            "milestone_branch": "milestone/m0",
+            "issue_branch": "issue/m0/001-foundation",
+            "base_sha": "a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7",
+            "worktree": "/Users/spiegel/Projects/Arma3Launcher",
+            "remote_pr": null
+          },
+          "bootstrap_exception": {
+            "authorized": true,
+            "evidence": "user authorized build 2026-09-19",
+            "scope": "establish minimal stack and full executable gate",
+            "acceptance_requires_actual_gate_pass": true
+          },
+          "adopted_by": "/root",
+          "adopted_at": "2026-09-19T22:13:07.801114+00:00",
+          "architecture_bindings": [
+            {
+              "design": "docs/specs/ARCH-001.md",
+              "revision": 2,
+              "sha256": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "review_id": "AR-001-R2",
+              "adopted_scope": "M0-001 A1-A5 first native checkpoint"
+            },
+            {
+              "design": "docs/specs/ARCH-002.md",
+              "revision": 1,
+              "sha256": "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+              "review_id": "AR-002-R1",
+              "adopted_scope": "local mod artwork and gate correction"
+            }
+          ],
+          "content_hash": "b56835a7daf5ab21ac2f45a9fca5155574d9e6faa04bc9ba3168947109049036"
+        },
+        {
+          "revision": 3,
+          "objective": "First native checkpoint with shared content artwork and immediate selection",
+          "exclusions": [
+            "Steam/game writes",
+            "addon copying",
+            "remote push/merge",
+            "release",
+            "child agents"
+          ],
+          "permitted_paths_resources": [
+            "Package.swift",
+            "Sources/",
+            "Tests/",
+            "App/",
+            "Arma3Launcher.xcodeproj/",
+            "scripts/",
+            ".gitignore",
+            ".swift-format",
+            ".build/"
+          ],
+          "authoritative_inputs": {
+            "architecture": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "design_brief": "9dc7786f170196eb708b90675a3221ff44871d02c1609251a73066c4d1768798",
+            "task_packet": "9718079409091d9f832ed6e47bcf10a4f56cd59d8d2d3eb9025cc18cff64662f"
+          },
+          "architecture_binding": {
+            "design": "docs/specs/ARCH-001.md",
+            "revision": 2,
+            "sha256": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "review_id": "AR-001-R2",
+            "adopted_scope": "M0-001 A1-A5 first native checkpoint"
+          },
+          "dependencies": [
+            {
+              "task": "ARCH-001",
+              "type": "approved-contract",
+              "revision": 2,
+              "artifact_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+            }
+          ],
+          "deliverables": [
+            "Xcode app project",
+            "Foundation Core package and tests",
+            "read-only diagnostics",
+            "functional native GUI",
+            "canonical gate and raw verification logs"
+          ],
+          "acceptance_criteria": [
+            {
+              "id": "A1",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A2",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A3",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A4",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A5",
+              "owner": "independent QA and lead; user for A5 visual",
+              "source": "ARCH-001 rev2"
+            },
+            {
+              "id": "A6",
+              "owner": "independent QA and lead; user visual",
+              "source": "ARCH-002 rev1 local artwork"
+            },
+            {
+              "id": "A7",
+              "owner": "independentQA/root/usernative",
+              "source": "ARCH-003 revision2"
+            }
+          ],
+          "check_plan": [
+            "canonical full gate",
+            "real read-only diagnostics",
+            "independent review",
+            "native light/dark and real-game evidence"
+          ],
+          "review_authority": "independent Sol QA; lead integrates; user visual acceptance",
+          "model_route": {
+            "agent_type": "sol_worker",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "fork_turns": "none",
+            "read_only": false
+          },
+          "limits": {
+            "minutes": 30,
+            "tool_calls": 100,
+            "code_attempt": 6,
+            "sol_repair_limit": 4
+          },
+          "git_binding": {
+            "milestone": "M0",
+            "milestone_branch": "milestone/m0",
+            "issue_branch": "issue/m0/001-foundation",
+            "base_sha": "a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7",
+            "worktree": "/Users/spiegel/Projects/Arma3Launcher",
+            "remote_pr": null
+          },
+          "bootstrap_exception": {
+            "authorized": true,
+            "evidence": "user authorized build 2026-09-19",
+            "scope": "establish minimal stack and full executable gate",
+            "acceptance_requires_actual_gate_pass": true
+          },
+          "adopted_by": "/root",
+          "adopted_at": "2026-09-20T01:25:14.936393+00:00",
+          "architecture_bindings": [
+            {
+              "design": "docs/specs/ARCH-001.md",
+              "revision": 2,
+              "sha256": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "review_id": "AR-001-R2",
+              "adopted_scope": "M0-001 A1-A5 first native checkpoint"
+            },
+            {
+              "design": "docs/specs/ARCH-002.md",
+              "revision": 1,
+              "sha256": "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+              "review_id": "AR-002-R1",
+              "adopted_scope": "local mod artwork and gate correction"
+            },
+            {
+              "design": "docs/specs/ARCH-003.md",
+              "revision": 2,
+              "sha256": "a49b591091f465fa9354f7cf5a0d93e19e1088cf301b0a04340515f8dac2ca6b",
+              "review_id": "AR-003-R2",
+              "adopted_scope": "shared local DLC and Workshop artwork and selection responsiveness"
+            }
+          ],
+          "content_hash": "81d3c6a34691b600bc3c41aa339dad59e190b71a4f92f5df48dedc36d0e3fe5e"
+        }
+      ],
+      "attempts": [
+        {
+          "id": "M0-001-A1",
+          "task_revision": 1,
+          "stage": "implementation",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A1",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "architecture": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+            "task_revision": "84dc54cf70f31ffaa687dd95dcdf5019f1736422bbc43bfddcb35ba769256649"
+          },
+          "repair_ordinal": 0,
+          "status": "submitted",
+          "recorded_at": "2026-09-19T21:41:07.477700+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A1/source-sha256.txt",
+            "sha256": "e76340639be40918568fbed29a0ae0d32f86856cdd88b69b53625dbb566cc1b8"
+          },
+          "evidence_ids": [
+            "M0-001-A1-REPORT"
+          ],
+          "observed_running_at": "2026-09-19T21:44:44.918775+00:00",
+          "completed_at": "2026-09-19T22:08:37.552806+00:00"
+        },
+        {
+          "id": "M0-001-A2",
+          "task_revision": 2,
+          "stage": "repair-and-artwork",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A2",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "b56835a7daf5ab21ac2f45a9fca5155574d9e6faa04bc9ba3168947109049036",
+            "prior_candidate": "e76340639be40918568fbed29a0ae0d32f86856cdd88b69b53625dbb566cc1b8",
+            "architectures": [
+              "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf"
+            ]
+          },
+          "repair_ordinal": 1,
+          "status": "submitted",
+          "recorded_at": "2026-09-19T22:14:12.542841+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A2-worker/source-sha256.txt",
+            "sha256": "6a679046f00a780cf0d54a1fc9950c6a543f8384ab5037efe2d335dc647ea868"
+          },
+          "evidence_ids": [
+            "M0-001-A2-REPORT"
+          ],
+          "observed_running_at": "2026-09-19T22:23:44.759690+00:00",
+          "completed_at": "2026-09-19T22:34:53.776752+00:00"
+        },
+        {
+          "id": "M0-001-A3",
+          "task_revision": 2,
+          "stage": "repair",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A3",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "b56835a7daf5ab21ac2f45a9fca5155574d9e6faa04bc9ba3168947109049036",
+            "prior_candidate": "6a679046f00a780cf0d54a1fc9950c6a543f8384ab5037efe2d335dc647ea868",
+            "architectures": [
+              "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf"
+            ]
+          },
+          "repair_ordinal": 2,
+          "status": "submitted",
+          "recorded_at": "2026-09-20T00:45:09.663055+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A3-author/source-sha256.txt",
+            "sha256": "e11c93e239209e8d45ad7a075fc9abc4404392bdb75203acb2ee3803bbc31425"
+          },
+          "evidence_ids": [
+            "M0-001-A3-REPORT"
+          ],
+          "observed_running_at": "2026-09-20T00:56:02.181029+00:00",
+          "completed_at": "2026-09-20T01:02:08.178263+00:00"
+        },
+        {
+          "id": "M0-001-A4",
+          "task_revision": 2,
+          "stage": "repair",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A4",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "b56835a7daf5ab21ac2f45a9fca5155574d9e6faa04bc9ba3168947109049036",
+            "prior_candidate": "e11c93e239209e8d45ad7a075fc9abc4404392bdb75203acb2ee3803bbc31425",
+            "architectures": [
+              "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf"
+            ]
+          },
+          "repair_ordinal": 3,
+          "status": "submitted",
+          "recorded_at": "2026-09-20T01:06:30.214580+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A4-author/source-sha256.txt",
+            "sha256": "a11226f8eada91a5f29c2911b395f189e6b72050c4ff980d1f7769322611ed1e"
+          },
+          "evidence_ids": [
+            "M0-001-A4-REPORT"
+          ],
+          "completed_at": "2026-09-20T01:12:42.178600+00:00"
+        },
+        {
+          "id": "M0-001-A5",
+          "task_revision": 2,
+          "stage": "astra-assisted-repair",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A5",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "b56835a7daf5ab21ac2f45a9fca5155574d9e6faa04bc9ba3168947109049036",
+            "prior_candidate": "a11226f8eada91a5f29c2911b395f189e6b72050c4ff980d1f7769322611ed1e",
+            "architectures": [
+              "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf"
+            ]
+          },
+          "repair_ordinal": 4,
+          "status": "submitted",
+          "recorded_at": "2026-09-20T01:15:26.270164+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A5-author/source-sha256.txt",
+            "sha256": "af156183ca5a1426666f857f1af7f38568ac7dc0aabd30583ec4c5185d7f761d"
+          },
+          "evidence_ids": [
+            "M0-001-A5-REPORT"
+          ],
+          "advice": "docs/engineering/reviews/AR-UI-004.md",
+          "assisted_attempt": 1,
+          "completed_at": "2026-09-20T01:20:16.935424+00:00"
+        },
+        {
+          "id": "M0-001-A6",
+          "task_revision": 3,
+          "stage": "astra-assisted-repair",
+          "author": "/root/implementation",
+          "role": "sol_worker",
+          "model": "gpt-5.6-sol",
+          "effort": "medium",
+          "claim": "lead-serialized-M0-001-A6",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "81d3c6a34691b600bc3c41aa339dad59e190b71a4f92f5df48dedc36d0e3fe5e",
+            "prior_candidate": "af156183ca5a1426666f857f1af7f38568ac7dc0aabd30583ec4c5185d7f761d",
+            "architectures": [
+              "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+              "a49b591091f465fa9354f7cf5a0d93e19e1088cf301b0a04340515f8dac2ca6b"
+            ]
+          },
+          "repair_ordinal": 5,
+          "status": "submitted",
+          "recorded_at": "2026-09-20T01:25:14.936393+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A6-author/source-sha256.txt",
+            "sha256": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf"
+          },
+          "evidence_ids": [
+            "M0-001-A6-REPORT"
+          ],
+          "advice": "docs/engineering/reviews/AR-003-R2.md",
+          "assisted_attempt": 2,
+          "completed_at": "2026-09-20T01:33:32.415080+00:00"
+        }
+      ],
+      "findings": [
+        {
+          "id": "QA1-01",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-02",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-03",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-04",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-05",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-06",
+          "severity": "medium",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-07",
+          "severity": "medium",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-08",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-09",
+          "severity": "medium",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA1-10",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A1.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA2-01",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A2.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA2-02",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A2.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA2-03",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A2.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA2-04",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A2.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA2-05",
+          "severity": "medium",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A2.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA2-06",
+          "severity": "medium",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A2.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "UI-01",
+          "severity": "medium",
+          "title": "Mod logo contrast in light/dark",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/evidence/native-checkpoint.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "UI-02",
+          "severity": "medium",
+          "title": "Steam status/Open Steam clipped under footer",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/evidence/native-checkpoint.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "UI-03",
+          "severity": "high",
+          "title": "Advanced options blanks all columns",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/evidence/native-checkpoint.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA3-01",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A3.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA3-02",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A3.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "QA3-03",
+          "severity": "medium",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A3.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "GATE-03",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/QA-001-A3.md",
+          "verification_evidence": "QA-001-A6"
+        },
+        {
+          "id": "UI-004",
+          "severity": "high",
+          "disposition": "verified-corrected",
+          "evidence": "docs/engineering/reviews/AR-UI-004.md",
+          "verification_evidence": "QA-001-A6"
+        }
+      ],
+      "acceptance": {
+        "qa": "pass-local-candidate",
+        "user_required": true,
+        "user_status": "pending-test-drive",
+        "real_game_loading": "unverified",
+        "native_click_latency": "requires-user-feedback"
+      },
+      "created_at": "2026-09-19T21:30:01.080729+00:00",
+      "updated_at": "2026-09-19T21:41:07.477700+00:00",
+      "local_candidate": {
+        "source_manifest_sha256": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf",
+        "branch": "issue/m0/001-foundation",
+        "commit_receipt": ".build/evidence/M0-001-A6-independent/commit.txt",
+        "purpose": "local-test-drive; no remote merge or release"
+      }
+    }
+  ],
+  "architecture_reviews": [
+    {
+      "id": "AR-001-R1",
+      "design_revision": 1,
+      "design_hash": "9ffde5c84723acb176f59284518a01ab9a319be7b1fb56183c09d9d4da6fdb49",
+      "author": "/root",
+      "reviewer": "/root/architecture_review",
+      "verdict": "changes-required",
+      "evidence": "docs/engineering/reviews/AR-001-R1.md",
+      "adopted": false
+    },
+    {
+      "id": "AR-001-R2",
+      "design_revision": 2,
+      "design_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+      "author": "/root",
+      "reviewer": "/root/architecture_review",
+      "verdict": "pass",
+      "evidence": "docs/engineering/reviews/AR-001-R2.md",
+      "covered_tasks": [
+        "M0-001"
+      ],
+      "adopted": true,
+      "adopted_by": "/root",
+      "adopted_at": "2026-09-19T21:41:07.477700+00:00",
+      "invalidation": null
+    },
+    {
+      "id": "AR-002-R1",
+      "design": "docs/specs/ARCH-002.md",
+      "design_revision": 1,
+      "design_hash": "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+      "author": "/root",
+      "reviewer": "/root/architecture_review",
+      "verdict": "pass",
+      "evidence": "docs/engineering/reviews/AR-002-R1.md",
+      "covered_tasks": [
+        "M0-001"
+      ],
+      "adopted": true,
+      "adopted_by": "/root",
+      "adopted_at": "2026-09-19T22:13:07.801114+00:00",
+      "invalidation": null
+    },
+    {
+      "id": "AR-003-R2",
+      "design": "docs/specs/ARCH-003.md",
+      "design_revision": 2,
+      "design_hash": "a49b591091f465fa9354f7cf5a0d93e19e1088cf301b0a04340515f8dac2ca6b",
+      "reviewer": "/root/architecture_review",
+      "author": "/root",
+      "model": "gpt-6-astra",
+      "effort": "high",
+      "verdict": "pass",
+      "adopted": true,
+      "covered_tasks": [
+        "M0-001"
+      ],
+      "invalidation": null,
+      "evidence": "docs/engineering/reviews/AR-003-R2.md"
+    }
+  ],
+  "hook_capabilities": [
+    {
+      "event": "coding-eligibility",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "worker-result",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "candidate-change",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "verification-finished",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "pre-commit-integration",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "native-ui-candidate",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "reconciliation",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "user-stop",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    },
+    {
+      "event": "session-end",
+      "status": "manual",
+      "executor": "lead",
+      "runtime": "collaboration/direct-tools",
+      "evidence": "docs/engineering/WORKFLOW.md#project-bindings-and-enforcement-ledger",
+      "unattended_verified": false
+    }
+  ],
+  "decisions": [],
+  "artifacts": [
+    {
+      "id": "GIT-INIT-001",
+      "kind": "direct-tool-receipt",
+      "command": "git init -b main; empty baseline; milestone/m0; issue/m0/001-foundation",
+      "exit_status": 0,
+      "commit_abbreviated": "a3ef844",
+      "note": "Empty ancestry seed only, not a product gate pass."
+    },
+    {
+      "id": "CONCEPT-001",
+      "kind": "generated-design-image",
+      "path": "docs/specs/design-brief/concepts/main-window-v1.png",
+      "sha256": "23bd466b4f9175d6240789d956ab72f9b88576f61935daec6f8f1bf43c9d32f3",
+      "producer": "built-in imagegen",
+      "prompt": "docs/specs/design-brief/concepts/main-window-v1-prompt.txt",
+      "status": "shown-to-user-not-approved",
+      "note": "Nonfunctional preview; current selections illustrative."
+    },
+    {
+      "id": "M0-001-A1-REPORT",
+      "kind": "candidate-park",
+      "path": ".build/evidence/M0-001-A1",
+      "source_manifest_sha256": "e76340639be40918568fbed29a0ae0d32f86856cdd88b69b53625dbb566cc1b8",
+      "worker_claim": "gate exit 0; 18 test functions; Xcode build passes; not independently accepted"
+    },
+    {
+      "id": "M0-001-A2-REPORT",
+      "kind": "worker-candidate",
+      "path": ".build/evidence/M0-001-A2-worker",
+      "source_manifest_sha256": "6a679046f00a780cf0d54a1fc9950c6a543f8384ab5037efe2d335dc647ea868",
+      "worker_gate_exit": 0,
+      "worker_swift_tests": 35,
+      "worker_swift_suites": 8,
+      "logos_decoded": 4,
+      "independent_verification": "pending"
+    },
+    {
+      "id": "M0-001-A3-REPORT",
+      "kind": "worker-candidate",
+      "path": ".build/evidence/M0-001-A3-author",
+      "source_manifest_sha256": "e11c93e239209e8d45ad7a075fc9abc4404392bdb75203acb2ee3803bbc31425",
+      "worker_gate_exit": 0,
+      "worker_swift_tests": 50,
+      "worker_swift_suites": 9,
+      "logos_decoded": 4,
+      "independent_verification": "pending"
+    },
+    {
+      "id": "M0-001-A4-REPORT",
+      "kind": "worker-candidate",
+      "path": ".build/evidence/M0-001-A4-author",
+      "source_manifest_sha256": "a11226f8eada91a5f29c2911b395f189e6b72050c4ff980d1f7769322611ed1e",
+      "worker_gate_exit": 0,
+      "worker_swift_tests": 60,
+      "worker_swift_suites": 9,
+      "logos_decoded": 4,
+      "independent_verification": "pending"
+    },
+    {
+      "id": "M0-001-A5-REPORT",
+      "kind": "worker-candidate",
+      "path": ".build/evidence/M0-001-A5-author",
+      "source_manifest_sha256": "af156183ca5a1426666f857f1af7f38568ac7dc0aabd30583ec4c5185d7f761d",
+      "worker_gate_exit": 0,
+      "worker_swift_tests": 60,
+      "independent_verification": "pending"
+    },
+    {
+      "id": "M0-001-A6-REPORT",
+      "kind": "worker-candidate",
+      "path": ".build/evidence/M0-001-A6-author",
+      "source_manifest_sha256": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf",
+      "worker_gate_exit": 0,
+      "worker_swift_tests": 68,
+      "worker_swift_suites": 10,
+      "images_decoded": 19,
+      "independent_verification": "passed-QA-001-A6"
+    }
+  ],
+  "events": [
+    {
+      "revision": 1,
+      "actor": "/root",
+      "at": "2026-09-19T21:24:16.251739+00:00",
+      "event": "authorized-design-and-bootstrap-planning",
+      "note": "Graph installed for explicit build authorization; coding awaits adopted review. Read-only Sol mac_installation investigation running."
+    },
+    {
+      "revision": 2,
+      "actor": "/root",
+      "at": "2026-09-19T21:30:01.080729+00:00",
+      "event": "parked-design-for-independent-review",
+      "design_sha256": "9ffde5c84723acb176f59284518a01ab9a319be7b1fb56183c09d9d4da6fdb49",
+      "note": "No product code written. Remote verified private and empty; branch issue/m0/001-foundation at empty base a3ef844."
+    },
+    {
+      "revision": 3,
+      "actor": "/root",
+      "at": "2026-09-19T21:31:38.581991+00:00",
+      "event": "architecture-review-claim-recorded",
+      "attempt": "ARCH-001-R1",
+      "note": "Read-only review running; code dispatch remains blocked. Logical hook checks are manual."
+    },
+    {
+      "revision": 4,
+      "actor": "/root",
+      "at": "2026-09-19T21:37:53.803313+00:00",
+      "event": "architecture-revision-2-claimed-for-review",
+      "design_sha256": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+      "note": "R1 findings persisted before revisions. Game readiness/duplicate precedence clarified. User explicitly requires original Workshop paths; concept is non-code and unapproved."
+    },
+    {
+      "revision": 5,
+      "actor": "/root",
+      "at": "2026-09-19T21:41:07.477987+00:00",
+      "event": "architecture-pass-and-adoption",
+      "review_id": "AR-001-R2",
+      "artifact_hash": "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619"
+    },
+    {
+      "revision": 6,
+      "actor": "/root",
+      "at": "2026-09-19T21:41:07.478152+00:00",
+      "event": "architecture-artifact-adopted",
+      "note": "Approved content-hash contract; not remote source integration."
+    },
+    {
+      "revision": 7,
+      "actor": "/root",
+      "at": "2026-09-19T21:41:07.478287+00:00",
+      "event": "architecture-task-complete",
+      "note": "Independent design acceptance; code/UI acceptance remain separate."
+    },
+    {
+      "revision": 8,
+      "actor": "/root",
+      "at": "2026-09-19T21:41:07.478468+00:00",
+      "event": "M0-001-ready",
+      "task_revision_hash": "84dc54cf70f31ffaa687dd95dcdf5019f1736422bbc43bfddcb35ba769256649",
+      "note": "Explicit stack/gate bootstrap exception; architecture independently adopted."
+    },
+    {
+      "revision": 9,
+      "actor": "/root",
+      "at": "2026-09-19T21:41:07.478597+00:00",
+      "event": "M0-001-claimed",
+      "attempt": "M0-001-A1",
+      "note": "Exclusive code/build-output writer; lead writes docs only."
+    },
+    {
+      "revision": 10,
+      "actor": "/root",
+      "at": "2026-09-19T21:44:44.918775+00:00",
+      "event": "implementation-running",
+      "attempt": "M0-001-A1",
+      "note": "Core source files observed; no gate result. Generated concept displayed and directly linked after user could not locate initial output."
+    },
+    {
+      "revision": 11,
+      "at": "2026-09-19T22:08:37.552806+00:00",
+      "kind": "candidate-submitted",
+      "task": "M0-001",
+      "note": "A1 parked for independent review. User explicitly requested early app launch; app opened as unapproved preview, not UX acceptance. User requested mod artwork; load-order question answered: selection order only."
+    },
+    {
+      "revision": 12,
+      "at": "2026-09-19T22:11:21.556437+00:00",
+      "kind": "independent-reviews-dispatched",
+      "candidate": "M0-001-A1",
+      "code_reviewer": "/root/candidate_qa",
+      "code_route": "Sol Medium (first call capacity failure; retried same model)",
+      "design_reviewer": "/root/architecture_review",
+      "design": "docs/specs/ARCH-002.md",
+      "sha256": "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+      "design_route": "Astra High",
+      "note": "Code writes paused. No pending ratification records in board; remote push/UX acceptance/distribution remain separate."
+    },
+    {
+      "revision": 13,
+      "at": "2026-09-19T22:13:07.801114+00:00",
+      "kind": "architecture-addendum-adopted",
+      "review": "AR-002-R1",
+      "task": "M0-001",
+      "task_revision": 2,
+      "note": "A2 not yet dispatched; waiting for initial candidate QA. All AR2 nonblocking obligations retained."
+    },
+    {
+      "revision": 14,
+      "at": "2026-09-19T22:14:12.542841+00:00",
+      "kind": "repair-claimed",
+      "task": "M0-001",
+      "attempt": "M0-001-A2",
+      "note": "QA1-01 through QA1-10 accepted for immediate repair; adopted ARCH002 artwork included. One writer, no acceptance waived."
+    },
+    {
+      "revision": 15,
+      "at": "2026-09-19T22:23:44.759690+00:00",
+      "kind": "progress-check",
+      "attempt": "M0-001-A2",
+      "note": "Worker reports artwork decoder/archive/UI and core repairs implemented; compile/regressions/gate still pending. No blockers, no gate acceptance."
+    },
+    {
+      "revision": 16,
+      "at": "2026-09-19T22:34:53.776752+00:00",
+      "kind": "candidate-submitted",
+      "task": "M0-001",
+      "attempt": "M0-001-A2",
+      "note": "Worker logs preserved separately before independent gate; source parked; no code writer active."
+    },
+    {
+      "revision": 17,
+      "at": "2026-09-20T00:45:09.663055+00:00",
+      "kind": "repair-claimed",
+      "attempt": "M0-001-A3",
+      "note": "User says just get it fixed and make it work. Prior independent full gate exit0 after approved Xcode cache access; reviewer requires six repairs. Native CUA Dock call stalled >2h; do not retry Dock. No code changes during stalled call."
+    },
+    {
+      "revision": 18,
+      "at": "2026-09-20T00:56:02.181029+00:00",
+      "kind": "native-interim-check",
+      "attempt": "M0-001-A3",
+      "note": "Interim build00:52UTC fixes Advanced blank-window repro; native screenshot confirms visiblecolumns. Steam footer stillclipped and ALiVElogo regressed. Root diagnosed PBO bulkread headerbudget; writer repairingwithoutliftingcaps. Allfourlogos remain required."
+    },
+    {
+      "revision": 19,
+      "at": "2026-09-20T01:02:08.178263+00:00",
+      "kind": "candidate-submitted",
+      "attempt": "M0-001-A3",
+      "note": "Final UI footercleanup included; sourceparked and authorlogs preserved before independent gate. No writer active."
+    },
+    {
+      "revision": 20,
+      "at": "2026-09-20T01:06:30.214580+00:00",
+      "kind": "repair-claimed",
+      "attempt": "M0-001-A4",
+      "note": "Final ordinary repair: retained mandatory verification cases and submitted-board self-test fixture. Product UI fixes verified; no new feature scope."
+    },
+    {
+      "revision": 21,
+      "at": "2026-09-20T01:12:42.178600+00:00",
+      "kind": "candidate-submitted",
+      "attempt": "M0-001-A4",
+      "note": "A4 source frozen and author evidence parked. Native appearance transition finding under investigation."
+    },
+    {
+      "revision": 22,
+      "at": "2026-09-20T01:15:26.270164+00:00",
+      "kind": "assisted-repair-claimed",
+      "attempt": "M0-001-A5",
+      "note": "Astra High advised minimal app-level appearance override. Two retained assertion improvements bundled. A4 independent gate exit0; no acceptance waived."
+    },
+    {
+      "revision": 23,
+      "at": "2026-09-20T01:20:16.935424+00:00",
+      "kind": "candidate-submitted",
+      "attempt": "M0-001-A5",
+      "note": "A5 parked. User requests shared DLC/Workshop artwork interface and reports 1.5s selection delay. Additional scope under design; no source writer active."
+    },
+    {
+      "revision": 24,
+      "at": "2026-09-20T01:25:14.936393+00:00",
+      "kind": "architecture-adopted-and-scope-claimed",
+      "attempt": "M0-001-A6",
+      "design": "AR-003-R2",
+      "note": "UserexplicitsharedDLC/Workshopinterface and1.5sselectiondelay. A5independentgate/reviewpass. Retainincidentcounts."
+    },
+    {
+      "revision": 25,
+      "at": "2026-09-20T01:33:32.415080+00:00",
+      "kind": "candidate-submitted",
+      "attempt": "M0-001-A6",
+      "note": "A6 parked with source and full author logs. Sol capacity error resumed same model/attempt; not reset. InterimnativeDLCimagesandrowdetailobserved."
+    },
+    {
+      "revision": 26,
+      "at": "2026-09-20T01:37:08.766157+00:00",
+      "kind": "independent-candidate-approved",
+      "attempt": "M0-001-A6",
+      "note": "Exact submitted source passed independent gate/review; local candidate commit next. User and actual game acceptance remain open."
+    }
+  ],
+  "git_workflow": {
+    "default_branch": "main",
+    "milestone_branch_pattern": "milestone/<key>",
+    "issue_branch_pattern": "issue/<key>/<iid>-<slug>",
+    "milestones": {
+      "m0": {
+        "id": "M0",
+        "branch": "milestone/m0",
+        "base_commit": "a3ef844",
+        "tracker_id": null
+      }
+    },
+    "issue_mr_target": "own-milestone-only",
+    "milestone_mr_target": "default-after-milestone-acceptance",
+    "direct_integration_branch_push": "forbidden",
+    "server_protection": "not-installed",
+    "mr_relationship_guard": "manual",
+    "evidence_ids": [
+      "GIT-INIT-001"
+    ]
+  },
+  "code_review_sessions": [
+    {
+      "id": "QA-001-A1",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "e76340639be40918568fbed29a0ae0d32f86856cdd88b69b53625dbb566cc1b8",
+      "verdict": "changes-required",
+      "evidence": "docs/engineering/reviews/QA-001-A1.md"
+    },
+    {
+      "id": "QA-001-A2",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "6a679046f00a780cf0d54a1fc9950c6a543f8384ab5037efe2d335dc647ea868",
+      "verdict": "changes-required",
+      "evidence": "docs/engineering/reviews/QA-001-A2.md"
+    },
+    {
+      "id": "QA-001-A3",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "e11c93e239209e8d45ad7a075fc9abc4404392bdb75203acb2ee3803bbc31425",
+      "verdict": "changes-required",
+      "evidence": "docs/engineering/reviews/QA-001-A3.md"
+    },
+    {
+      "id": "QA-001-A4",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "a11226f8eada91a5f29c2911b395f189e6b72050c4ff980d1f7769322611ed1e",
+      "verdict": "pass-with-lead-assertion-corrections",
+      "evidence": "docs/engineering/reviews/QA-001-A4.md"
+    },
+    {
+      "id": "QA-001-A5",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "af156183ca5a1426666f857f1af7f38568ac7dc0aabd30583ec4c5185d7f761d",
+      "verdict": "pass",
+      "evidence": "docs/engineering/reviews/QA-001-A5.md"
+    },
+    {
+      "id": "QA-001-A6",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf",
+      "verdict": "pass",
+      "evidence": "docs/engineering/reviews/QA-001-A6.md"
+    }
+  ],
+  "hard_limit_exceptions": []
+}

@@ -1,0 +1,21 @@
+# User acceptance and remaining work
+
+Live execution belongs to `engineering/board.json`.
+
+- UX-001 — Required test-drive feedback on the committed build: single-click row
+  selection and checkbox response, Advanced options, resizing and light/dark UI.
+  The user reported1.5s selection delays; the handler is fixed but perceived
+  latency awaits their confirmation. CUA coordinate actions could not verify
+  minimum-size resizing or checkbox clicks; do not record those as passed.
+- GAME-001 — Actual in-game loading of selected Workshop and optional DLC, and
+  both advertised Mac game modes, remain unverified.
+- ORDER-001 — Automatic dependency selection and load ordering are not implemented;
+  current launch order is the selection/preset order. Previously disclosed to user.
+- PUB-001 — Source remains local; GitHub repository creation did not authorize push
+  or remote integration. Current local-only work has no remote backup.
+- DIST-001 — Distribution, paid signing and notarization remain release decisions.
+
+DLC-ART-001 is implemented under ARCH-003r2:shared source, reader and view show
+15existing local DLC/platform pictures and4Workshop logos. MissingCSLA has no
+cached image and keeps an honest fallback; no network fetch or EBO extraction.
+No other parked architecture decisions are awaiting ratification.
