@@ -1,0 +1,387 @@
+# ARCH-001 — First native configuration and launch checkpoint
+
+Revision: 3. Status: proposed; coding prohibited until independent passing
+review and lead adoption of the exact content hash. Author: primary lead.
+
+## Purpose and authorized increment
+
+Implement the product described in [README](../../README.md) and the
+[design brief](design-brief.md): a native Mac GUI that detects the Steam Mac
+release of Arma 3, presents Workshop addons and optional DLC, saves configurations,
+and launches the selected game bundle with selected content. The user authorized
+construction on 2026-09-19. This design covers bootstrap, core logic/tests, and one
+functional main-window checkpoint, not a complete commercial release.
+
+Acceptance of presets in this increment follows the user's authorization to build
+the proposed product. The representative window remains subject to in-use user
+visual acceptance before expanding into further design waves.
+
+User reiterated that addons remain in the Steam download folder: read in place
+and pass original paths; do not copy, relocate or stage their files.
+
+Out of scope: Windows/CrossOver, Workshop subscribing/downloading, moving or
+symlinking content, editing Steam launch settings, workshop metadata network
+services, multiplayer server browser, dependency auto-installation, modifying
+game binaries, telemetry, paid signing/notarization, and release publication.
+
+## Stack and delivery
+
+- Swift 6 language mode, Foundation core library, SwiftUI macOS application,
+  AppKit only at native integration boundaries. Minimum macOS 14.0. This permits
+  modern SwiftUI/Observation while avoiding dependence on the host's macOS 27 UI
+  APIs. Build compatibility is checked with a 14.0 deployment target; actual
+  older-system and Intel runtime testing are not claimed.
+- An ordinary checked-in `Arma3Launcher.xcodeproj`, shared `Arma3Launcher` scheme,
+  opens directly in Xcode. Local Swift package `LauncherCore` owns platform-light
+  logic and tests. The app links the local package product. No remote dependency,
+  XcodeGen, Homebrew package, database, or generated-project tool is required.
+- A Swift package diagnostics executable uses the same discovery/plan core for
+  read-only local verification. It must never launch games or mutate content.
+- Standard local/direct-distribution app with App Sandbox disabled. Apple's
+  documented NSWorkspace argument API ignores arguments from sandboxed callers.
+  This is an explicit product constraint, not a change to Codex permissions.
+  No privileged helper, root access, or automation entitlement is required.
+- Debug build uses local ad-hoc signing where available. Developer ID signing,
+  notarization, universal release validation and distribution are later work.
+
+## Actual platform evidence and assumptions
+
+Read-only investigation found both `ArmA3.app` (x86_64) and `ArmA3 AS Native.app`
+(arm64) in the game directory. Both identify as `com.vpltd.Arma3`. Bundle identifiers
+therefore cannot select a mode. Four installed Workshop items have addon packages
+and usable display names. Seven optional DLC folders are installed. The library
+index omits 107410 even though the appmanifest and installation exist.
+
+Source evidence: [installation investigation](../engineering/evidence/installation-2026-09-19.md),
+[Bohemia Mac guide](https://community.bistudio.com/wiki/Arma_3%3A_Play_on_Mac),
+[Apple arguments documentation](https://developer.apple.com/documentation/appkit/nsworkspace/openconfiguration/arguments),
+and [OpenConfiguration](https://developer.apple.com/documentation/appkit/nsworkspace/openconfiguration).
+
+The Bohemia guide documents `C:`-prefixed absolute mod paths and semicolon
+separators. Arrays of native process arguments avoid a shell, but the installed
+eON wrapper also bridges to a Windows-style command line. User testing of the
+revision2 candidate reports selected mods absent. The Mac guide documents
+embedded double quotes around values with spaces. Revision3 corrects this
+serialization boundary; the correction remains a candidate until actual game
+loading is observed. Unit tests and process handoff alone cannot prove loading.
+
+## Module boundaries and data contracts
+
+| Module | Responsibility and dependencies |
+| --- | --- |
+| LauncherCore models | Codable/Sendable value records; no AppKit/SwiftUI, globals or I/O |
+| ValveKeyValues parser | Bounded data-to-tree parse for VDF/ACF; duplicate keys retained or explicitly rejected when ambiguous |
+| Steam discovery | Read configured/default library roots, manifests, bundle/content metadata; return immutable scan snapshot plus diagnostics |
+| Content catalog | Classify Workshop content and installed DLC; pure normalization plus small scoped reads |
+| Launch planner | Pure validated snapshot + configuration to target bundle URL and `[String]`; no process execution |
+| Configuration store | Versioned JSON load/save at caller-provided URL with atomic writes and surfaced errors |
+| LauncherDiagnostics | Read-only discovery and launch-plan inspection using Core; no app-launch API |
+| App model | MainActor state, async scan lifecycle, selection/preset persistence, user-facing errors |
+| Native launcher | NSWorkspace and running-app/Steam preflight; execute only a user Play action |
+| SwiftUI views | Main configuration window with content list, inspector, mode controls, presets and Play |
+
+Suggested source layout: `Sources/LauncherCore/`, `Sources/LauncherDiagnostics/`,
+`Tests/LauncherCoreTests/`, `App/`, `scripts/`, `Arma3Launcher.xcodeproj/`.
+Keep cohesive features in separate files; no miscellaneous Utils module.
+
+Core records include:
+
+- `SteamInstallation`: library roots, selected game directory, available exact
+  game bundle URLs/mode and appmanifest status. Also retain discovered game
+  candidates and whether an explicit game choice is required. Paths are file
+  URLs, not shell text.
+- `ContentItem`: stable identity, display name, source (Workshop or DLC), path,
+  load classification, availability and explanatory status. Workshop identity
+  uses item ID; DLC uses explicit catalog ID. Keep item identity across rescans.
+  Retain duplicate physical copies and their library/status provenance alongside
+  the resolved path; never hide precedence decisions in iteration order.
+- `DiscoverySnapshot`: generation/result, installation, content, warnings/errors.
+  Missing, updating, unknown and installed are distinct; never infer ownership.
+- `LaunchConfiguration`: mode, ordered selected content IDs, limited typed
+  options, optional advanced argv lines, and selected preset identity.
+- `LaunchPlan`: exact application URL, literal argv, selected content identities
+  and user-facing summary. A plan is not execution or proof the game loaded mods.
+- `Preset`: UUID, name and configuration. Persist versioned settings with last
+  selected preset, paths and selections; do not store Steam credentials.
+
+## Discovery rules
+
+1. Start from `~/Library/Application Support/Steam` plus user-selected Steam or
+   library roots. Parse `steamapps/libraryfolders.vdf`; tolerate current dictionary
+   and legacy indexed-string entries. Deduplicate normalized absolute paths.
+   The library `apps` index is only a hint: inspect each library directly for
+   `appmanifest_107410.acf` and a validated game directory. Include the default
+   root even when the app ID is absent in the library index.
+2. A valid explicit game-folder selection always wins. If it disappears, report
+   it missing without switching to an automatic candidate. Without an explicit
+   choice, one candidate is selected automatically; multiple distinct game
+   directories require the player to choose a game folder before Play. Keep
+   candidates visible in the installation explanation; no elaborate manager is
+   needed. Normalize paths and deduplicate physical-root aliases where possible.
+   Use appmanifest `installdir` only as a single safe relative directory name.
+   Reject separators, traversal and absolute overrides. Permit manual game-folder
+   selection after checking expected bundles, but require an associated readable
+   107410 appmanifest in a known/selected Steam library for Play. A manually
+   selected folder without that evidence can be displayed, not launched. Explain
+   how to select its Steam library; there is no implicit unknown-state override.
+3. Identify the two known mode bundles by exact directory, validated Info.plist
+   identifier and executable existence. Native mode requires an Apple silicon
+   host; default mode may require Rosetta on Apple silicon. Do not silently
+   install Rosetta or choose a different mode after a launch failure.
+4. For each library, inspect `steamapps/workshop/content/107410` numeric direct
+   child folders and corresponding `appworkshop_107410.acf`. Use installed item
+   records and manifest comparison to detect unavailable/updating content.
+   Missing installed records or malformed/missing ACF mean unknown availability;
+   preserve the visible item with a reason and prevent launch until refreshed.
+   Global pending flags without item-specific evidence yield a conservative
+   pending/unknown explanation rather than calling all items complete.
+5. Positive addon evidence is a case-insensitive top-level `addons` directory
+   containing `.pbo` or `.ebo` files. Do not auto-enable nested optional packs.
+   Mission-only or unrecognized folders stay visible as unsupported content and
+   cannot be selected as mods. No positive mission classifier is claimed yet.
+6. Display-name preference: literal `name` in `mod.cpp`, then `meta.cpp`, then
+   Workshop ID. Parse strings as data, including escapes/CRLF/comments; never
+   execute preprocessor/config expressions. Nonliteral/localization expressions
+   fall back. Escape/control-normalize names for display; no webview rendering.
+7. DLC catalog distinguishes platform content (display status; no fake toggle)
+   from optional loadable content. Optional catalog initially includes Contact,
+   GM, vn, csla, WS, SPE, RF and EF using documented switches/actual case-folded
+   folders. Only installed nonempty package-bearing optional content is enabled
+   for selection. Folder or InstalledDepots evidence means installed, not owned.
+   Show a compact ownership-unverified explanation and let Steam/game enforce
+   licensing. Never attempt entitlement bypass or present a compatibility pack
+   as a purchased DLC.
+8. Read metadata with size bounds (8 MiB VDF/ACF, 1 MiB config/Info metadata);
+   catch unreadable/malformed files as diagnostics. Avoid recursive whole-game
+   scans or byte summing hundreds of GB. Inspect only known directories and
+   bounded metadata. Do not execute or load addon binaries.
+
+Game readiness is a distinct value: ready, updating/incomplete, error, or unknown.
+For this increment, ready requires readable appmanifest data for app ID 107410,
+matching selected installation, `StateFlags == 4` (fully installed), and no
+contradictory progress/error evidence. If UpdateResult is present it must be 0;
+each present download/staging total must have a matching completed-byte value
+and equal totals. Pending/other StateFlags, unequal progress, or nonzero update
+result block Play; malformed fields or missing required installation/StateFlags
+evidence are unknown and also block Play. Absent optional progress/error fields
+are not failures when the required fully-installed state is valid. This is a
+conservative readiness check, not cryptographic integrity verification. All
+game-relative DLC inherits non-ready game status, even when packages remain.
+
+For duplicate Workshop IDs, choose the copy in the selected game's library
+when present, even if incomplete; never silently replace its pending content
+with an old copy elsewhere. If no copy exists there, prefer ready candidates
+over non-ready candidates and then use ordered library precedence: explicit
+user-configured roots in saved order, default Steam root, then remaining
+normalized absolute library paths lexicographically. If no ready copy exists,
+retain the highest-precedence copy as unavailable. Report duplicate provenance
+and the chosen location in item details. Sort candidates before selection;
+directory enumeration order is never precedence. Fixture this rule explicitly.
+
+Discovery runs off the main thread and is cancelable. A new request supersedes
+the previous result; generation checks prevent an older scan overwriting newer
+state. Refresh on first open, explicit Refresh, and app activation, coalescing
+duplicate requests. This is dynamic discovery without an always-running watcher.
+Persist selected IDs independently of current scan results; missing selected
+items remain explicit blockers instead of disappearing silently.
+
+## Launch contract and failure behavior
+
+The user selects an available mode and presses Play. Disable repeated Play while
+preparing. Revalidate selected paths/status and target bundle immediately before
+handoff, including a fresh read of game and Workshop readiness metadata; fail
+clearly for removed, incomplete, unknown or unsupported content. A scan/preset
+selection cannot override these fresh readiness blockers.
+Require Steam to be running and offer a separate Open Steam action when absent.
+
+Preflight all running applications for either known game URL or shared game
+bundle ID. If found, block launching with an explanation that the existing game
+must close to apply a new configuration. Do not terminate the user's game or
+silently activate an instance that cannot receive the requested arguments.
+
+The pure planner:
+
+- Resolves selections in saved order; deduplicates by stable ID. Uses one
+  `-mod=` argv element joined with semicolons; each selected addon or optional DLC
+  is represented by its resolved absolute path prefixed with `C:` per the Mac
+  guide. Reject semicolons, newlines, NUL or double quotes within paths because
+  the engine's separator/quoting syntax cannot represent those safely here.
+  Enclose the complete semicolon-joined value in literal double quote characters
+  inside that single argv element, for example
+  `-mod="C:/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/463939057/;C:/Users/player/Library/Application Support/Steam/steamapps/workshop/content/107410/450814997/"`.
+  These delimiters serve the downstream engine parser; they are not a shell
+  command. Ordinary spaces, Unicode and existing directory trailing slashes
+  remain unchanged. Do not add backslashes before spaces or quote delimiters.
+  Quote the full list consistently for one or more selected items, including
+  paths without spaces; with no selected items omit `-mod` completely.
+- Adds the documented `-p`, `default`, `-no-remote` as separate arguments.
+  Typed options initially include `-skipIntro`, `-noSplash` and `-window`.
+- An advanced editor accepts one literal argument per nonblank line, rather
+  than a shell command. Trim surrounding whitespace on each line; compare the
+  parameter name before `=` case-insensitively. Reject control characters,
+  reserved mod/profile flags
+  and their `=` forms that conflict with managed options (`-mod`, `-serverMod`,
+  `-p`, `-no-remote`, `-par`, and typed options). Never evaluate shell syntax.
+  Clearly label this an advanced input with a readable plan preview.
+
+Native launcher uses `NSWorkspace.openApplication(at:configuration:)` with the
+exact bundle URL, `arguments`, `allowsRunningApplicationSubstitution=false`, and
+`createsNewApplicationInstance=false`. Do not insert `--args`; it is an `open`
+CLI switch, not an application argument. No shell command construction.
+
+UI states are idle/validating/handing-off/handed-off/failed. A returned running
+application means LaunchServices accepted/started that process; it does not
+prove the main menu, DLC entitlement or addon loading. Keep error details
+available and preserve the player's configuration after failure. During real
+verification, record process path/argv and game evidence separately.
+Check the returned bundle URL against the requested URL. If different, report
+handoff mismatch without claiming success. An externally started game can race
+the preflight; a returned existing process does not prove new arguments were
+applied. Never claim configuration-applied from the handoff alone and never
+force duplicate instances to avoid this race.
+
+## Persistence and privacy
+
+Store only this application's versioned configuration JSON under its own
+Application Support directory. Inject a temporary store URL in tests. Use atomic
+writes. Malformed or unknown schema versions must show a recoverable error and
+preserve the original file; do not overwrite on startup or silent fallback.
+Require an explicit reset or user save to replace a failed-load file. Surface
+write failures. Keep Steam and game content read-only.
+
+Logs and diagnostics remain local; no telemetry/network metadata calls. Generated
+build outputs, local machine path dumps and real game captures are ignored in
+Git. Commit only synthetic fixtures, summarized redacted evidence and code.
+
+## GUI checkpoint
+
+Follow the design brief. A single resizable native window with a sidebar for
+the current configuration/presets, a searchable Workshop/DLC content region,
+selection details and a compact persistent launch area is the first checkpoint.
+Maintain separate mode and content controls. Use macOS materials/semantic colors,
+system typography and one clear accent action; avoid a dashboard of boxed cards.
+Support light/dark appearance, keyboard focus/Space selection, useful labels and
+search, visible refresh/progress, empty/error states, and comfortable list rows.
+
+First-run detection and manual folder selection must be functional. Presets can
+be created, renamed, recalled and deleted with their content/mode/options intact.
+Missing selections appear in the launch summary. Copyable argument preview is
+available in an advanced disclosure; implementation identifiers do not clutter
+the ordinary flow. User screenshots/visual signoff follow a committed,
+independently reviewed and gate-passing candidate. No fake data masquerades as
+live discovery in the delivered app.
+
+## Patterns and conventions register
+
+| Problem | Choice | Alternative/tradeoff | Observable check |
+| --- | --- | --- | --- |
+| Test game arguments without starting game | Pure planner returning values | Shell construction rejected for quoting/injection risk | Exact argv tests; Core has no launch API |
+| Responsive disk discovery | Background scan + generation check; MainActor UI | Full recursive live watcher unnecessary initially | Cancellation/stale-result behavior reviewed and exercised |
+| Reuse discovery in diagnostics/UI | Foundation Core package | Duplicate parsers rejected | Both consumers import one module |
+| Clear I/O effects | Scoped discovery/store/native adapter | Global manager/singleton dependency webs avoided | Core transforms have explicit inputs; test fixtures inject roots/store |
+| Maintain selection after updates | Stable IDs and snapshot resolution | Row-index/path-only identity breaks changes | Missing selection/rescan/preset tests |
+| Native app integration | Small AppKit adapter + SwiftUI views | Web shell unnecessary for native target | No web renderer/server or shell subprocess launcher |
+
+Use Swift naming conventions, explicit access levels on Core API, Sendable value
+types and meaningful error enums. No force unwraps of user-controlled input.
+Use `swift-format` from the installed toolchain, not a new external formatter.
+Small cohesive functions and feature files; tests assert independent expected
+values and failures. Cancellation is not rendered as a spurious failure.
+
+Line-count scope: all handwritten `.swift` in Sources, Tests, App and Package.swift,
+plus handwritten `.sh`/`.py` under scripts. Count blank/comments/final lines.
+Exclude `.build`, DerivedData, generated Xcode pbxproj metadata, vendor/lockfiles,
+JSON state/evidence and Markdown. No vendor source is currently planned.
+800 soft requires rationale/review; above 1400 blocks the gate without a real
+bounded human exception. No exception is granted by this design.
+
+## Verification and acceptance
+
+Bootstrap must create and successfully run `bash scripts/gate.sh` from repo root.
+This is a proposed command until the actual script exists and passes. Required
+legs run sequentially: line-size/document/board checks; strict swift-format lint;
+Swift package tests with warnings as errors; Xcode Debug app build with warnings
+as errors and local DerivedData. Preserve full logs and actual statuses under
+ignored `.build/evidence/`; local caches do not need global configuration changes.
+Do not silently skip a leg or claim Xcode environment errors are product passes.
+
+Tests cover healthy/malformed/truncated VDF, safe installdir, stale library apps
+index, multi-library discovery/deduplication, literal name parsing, incomplete and
+unknown Workshop items, addon-vs-unsupported classification, optional DLC and
+unknown ownership, missing selections, path characters/spaces, exact multi-mod
+argv order, advanced conflicting flags, and versioned preset persistence failures.
+Include game-ready/updating/error/unknown/missing-manifest/manual-folder fixtures,
+multiple installations, vanished explicit game selection, duplicate Workshop
+IDs with different readiness, and case-insensitive advanced-flag conflicts.
+Meaningful edge-case coverage matters, not a fabricated golden test count.
+
+Acceptance IDs:
+
+- A1: project opens/builds in Xcode; full canonical gate succeeds with no known
+  test/compile-warning exceptions. Swift format, line count, tests and build are
+  all required. Gate reports actual test count.
+- A2: discovery fixtures cover failures above; read-only diagnostics correctly
+  identify the user's actual two bundles, four Workshop items and installed
+  optional DLC, without disclosing credentials or mutating Steam/game content.
+- A3: one functioning native GUI selects content and modes, refreshes, preserves
+  missing selections, saves/loads presets, and handles unavailable installation.
+- A4: independent planner/preflight tests establish safe exact arguments. A real
+  launch then verifies the requested bundle/process arguments and, where
+  positively evidenced, selected addon/optional DLC inside the game. Exercise
+  both advertised modes where available and mark any unverified mode explicitly.
+  Absent in-game loading evidence leaves A4 incomplete. Engine path mapping
+  remains incomplete until observed; a process start alone cannot satisfy it.
+- A5: independent code review has no unresolved blocking findings. Candidate
+  and gate identities match. Native UI is exercised in both appearances; user
+  in-use approval records that exact committed build before UX completion.
+
+Task graph: ARCH-001 independent design review/adoption -> M0-001 first native
+checkpoint construction -> QA-001 independent QA/repair -> local committed
+candidate -> UX-001 user visual acceptance. M0-001 is one issue containing
+sequential bootstrap/core and GUI/launch-adapter implementation phases in the
+same exclusive checkout. Establish and run the core checks before extending
+the GUI. The final candidate must pass the complete gate. Remote integration
+is independently blocked pending push authorization and PR guards. No task is
+Done from a worker's completion message.
+
+## Revision3: GAME-001 scoped recovery and acceptance
+
+Originating incident remains M0-001; A1–A7 and all prior findings/evidence remain
+recorded. One independent recovery review and one revised design round precede
+the second bounded coding cycle. Current user routing selects Astra High for
+independent judgment, superseding the older local Max role pin. No source edits
+are eligible until independent review passes this exact revision.
+
+The supported scope is one serialization correction in LaunchPlanner plus
+regression tests. Retain discovery, original Steam paths, saved selection order,
+presets, native NSWorkspace transport, running-game guards, truthful handoff
+status and shared artwork UI. Do not reorder ACE/CBA, add dependency resolution,
+strip slashes, change game/Steam files or automatically launch a game.
+
+Tests must assert the full ordered argv, exact embedded quote bytes around the
+whole list, no shell escapes, original paths, and deduplication. Cover no selected
+content, one selected content item, and mixed Workshop/optional DLC; both game
+modes; spaces/no spaces, Unicode and trailing directory slashes. Retain unsafe
+separator, quotes, CR/LF and NUL rejection. Add an app-model boundary test that
+selects content, runs the fresh discovery preflight, captures the plan passed to
+the injected launch operation, and asserts the chosen bundle plus complete argv.
+This checks selection-to-handoff behavior without starting a real game.
+
+The independent full gate and review precede a local candidate commit. Runtime
+acceptance separately records candidate identity, selected preset/IDs, requested
+bundle and observed process argv. Verify both ACE and CBA in the game's loaded
+content listing or an engine log explicitly identifying them as loaded. A picture,
+NSWorkspace success, OS argv, or generic DLL log alone is insufficient. Verify
+optional DLC and both advertised modes separately before broad acceptance.
+If a mode or optional DLC cannot be exercised, keep that coverage explicitly
+open; do not claim full game compatibility from one successful preset.
+
+If automatic review prevents a diagnostic launch, continue authorized local
+construction and request concrete test permission once the committed build is
+ready. A user-started game may be inspected read-only. Never terminate a user
+game; let the player exit it before applying a changed configuration.
+
+Rejection criterion: if the embedded-quote candidate still omits content, retain
+its exact argv/evidence and return to the independent diagnosis with the remaining
+cycle allowance. Do not try guessed transport/path/order variations or weaken
+the loading acceptance to process handoff.

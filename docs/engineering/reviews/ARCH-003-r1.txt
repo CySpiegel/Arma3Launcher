@@ -1,0 +1,118 @@
+# ARCH-003 — Shared content artwork and immediate selection
+
+Revision 1. Author: primary lead. Proposed for independent review before coding.
+Addendum to ARCH-001 revision2 and ARCH-002 revision1; their safety/launch,
+artwork bounds, no-addon-copy, concurrency and acceptance contracts remain in force.
+
+## Authorized scope and evidence
+
+The user requests images for DLC/expansions as well as Workshop and explicitly
+asks for a universal interface to avoid duplicated code. They report about
+1.5 seconds between clicking content and seeing selection. Extend the existing
+shared ContentRow and artwork pipeline, not separate DLC and mod views.
+
+Current rows install an onTapGesture(count:2), which can defer single-click
+recognition. Checkbox changes also call persistence directly and again from
+view onChange. These are evidenced sources of unnecessary waiting/work; the
+entire reported duration is not yet attributed to either. Read-only AppKit
+measurement found the host double-click interval 0.5s and runningApplications
+queries below 0.1ms; do not blame that getter for 1.5s without new evidence.
+
+Local Steam appcache/librarycache contains header.jpg artwork for all seven
+installed optional DLC and all eight platform DLC currently listed. Missing
+CSLA has no cached artwork. Its generic fallback remains honest. Some installed
+DLC mod.cpp references target EBO archives; do not parse/decrypt EBO or scan game
+archives to obtain DLC pictures. Read existing Steam cache images in place.
+
+## Shared artwork contract
+
+Add one Sendable, Equatable artwork source descriptor to ContentItem, independent
+of resolvedURL (which continues to mean launchable content directory). Variants:
+local mod directory and Steam application artwork (numeric appID plus Steam
+cache root). A missing descriptor means no available supported source. Preserve
+existing public initializers with defaults where useful to avoid incidental churn.
+
+One ArtworkReadService entry point accepts the descriptor, resolves bounded
+local bytes, passes the existing ArtworkPayload through ImageThumbnailDecoder,
+and returns the same PresentedArtwork. Local mods reuse ArtworkLoader/PBO/PAA;
+Steam art resolves a regular image file and reuses ordinary ImageIO decoding.
+Reuse one thumbnail view for rows and item details, including proportions,
+contrast canvas and accessible fallback. No per-category async image state.
+
+Steam cache root is request.defaultSteamRoot/appcache/librarycache. It is not
+inferred from a selected external game library. Use known DLC appIDs from the
+catalog below. Prefer header.jpg, then library_header.jpg, then logo.png in the
+app-ID directory; optionally the same filenames in at most 32 sorted direct
+child directories (current Steam cache hash layout). No recursive traversal.
+Canonical containment and expected directory/file type must be checked before
+every enumeration/read, using shared containment helpers where practical.
+No user/mod supplied appID or cache filename becomes an arbitrary path.
+
+Source images remain capped at 8MiB, 16384px per dimension and 64MP before decode;
+result maximum dimension128px. No online fetch, persistent artwork cache, asset
+vendoring, Steam/game writes, EBO parsing, installation or ownership inference.
+Unavailable, corrupt, outside-root or unsupported artwork retains the existing
+quiet fallback. Missing CSLA artwork must not masquerade as a real image.
+
+All categories use the existing off-main bounded reader and at most128 published
+thumbnails per scan. Stale guards compare scan generation, contentID and full
+artwork source descriptor (not only resolvedURL, which is nil for platform DLC).
+Refresh cancels old work and retries sources; no artwork read occurs from a row
+body, selection handler or the main actor. Existing handoff protection persists.
+
+Catalog (official Steam application IDs; existing labels/readiness unchanged):
+Contact1021790, GlobalMobilization1042220, PrairieFire1227700, CSLA1294440,
+WesternSahara1681170, Spearhead1175380, ReactionForces2647760,
+ExpeditionaryForces2647830, Karts288520, Helicopters304380, Marksmen332350,
+Apex395180, Jets601670, LawsOfWar571710, TacOps744950, Tanks798390.
+
+## Selection and persistence
+
+Remove the row-wide double-click recognizer; native single-click row selection
+shows details immediately and its checkbox toggles enablement once. Do not add a
+new gesture competing with native List selection or checkbox controls. Apply the
+same shared row to Workshop/optional/platform DLC; platform managed content
+remains non-toggleable. Preserve keyboard/native accessibility behavior.
+
+Avoid writing the same StoredConfiguration twice for a single change. A successful
+last-saved snapshot comparison in the model may suppress duplicate identical
+writes while retaining direct model persistence semantics. Record the snapshot
+only after save succeeds; preserve surfaced errors and retry failed writes. Do
+not introduce delayed writes that can lose the final edit on immediate Cmd-Q.
+Keep ordered selection, preset persistence, launch options and other state intact.
+Measure model toggling/persistence against a temporary synthetic store to separate
+processing time from UI gesture delay. Native/user click feedback is still needed
+to validate perceived latency; command-tool roundtrip time is not event latency.
+
+## Verification and gate evolution
+
+Synthetic tests: both descriptor paths resolve to the existing decoder; direct
+and one-level cached Steam layout, missing/corrupt/oversize sources, escaping file
+and directory symlinks; catalog appIDs; same-contentID changed artwork descriptor
+cannot publish stale image; cap and reader bounds remain green. Assertions prove
+successful-image controls as well as rejected inputs. Existing tests retain their
+contracts. Test persistence duplicate suppression and failed-write retry if changed.
+
+Read-only diagnostics: four actual Workshop images and15 cached DLC images decode,
+missing CSLA remains fallback, original addon paths untouched. Native smoke:
+both sections show actual images in light/dark; single-click item name shows detail,
+checkbox toggles once, Advanced stays visible and appearance transitions work.
+Preserve user selections when verifying; no game launch claimed from screenshots.
+
+Retain immutable prior task/design revisions. Add task revision3 with all three
+adopted architecture bindings before implementation. Update the gate's binding
+count logic and fixture copying to support the current bound design set without
+accepting omitted designs, duplicate bindings, stale hashes or historical matches.
+Task rev3 explicitly requires ARCH-001/002/003; fixture tests must exercise a
+missing third binding. Do not weaken earlier source-manifest or review checks.
+
+Full independent gate and exact-candidate code review precede local commit and
+user test-drive handoff. Original actual-game loading and user visual acceptance
+remain separately open. Preserve repair counters across this scope addition;
+next implementation is A6/assisted attempt2, not a reset.
+
+## Sources
+
+[Official Creator DLC catalog](https://arma3.com/dlc) links the corresponding
+Steam store IDs, including [Expeditionary Forces](https://store.steampowered.com/app/2647830/).
+The local Steam cache presence was checked directly on2026-09-19(local date).
