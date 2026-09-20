@@ -4,8 +4,10 @@ Live execution belongs to `engineering/board.json`.
 
 - UX-001 — Required test-drive feedback on the committed build: single-click row
   selection and checkbox response, Advanced options, resizing and light/dark UI.
-  The user reported1.5s selection delays; the handler is fixed but perceived
-  latency awaits their confirmation. CUA coordinate actions could not verify
+  The user confirmed the selection delay is fixed on build575c546.
+  Picture-shaped artwork backgrounds are implemented in shared component A7;
+  user visual feedback on that adjustment remains pending.
+  CUA coordinate actions could not verify
   minimum-size resizing or checkbox clicks; do not record those as passed.
 - GAME-001 — Actual in-game loading of selected Workshop and optional DLC, and
   both advertised Mac game modes, remain unverified.

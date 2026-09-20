@@ -1,12 +1,15 @@
 # Handoff
 
-The local test-drive candidate is the commit containing this handoff on
-`issue/m0/001-foundation`. Resolve the exact SHA with `git log -1`; its receipt is
-`.build/evidence/M0-001-A6-independent/commit.txt`. Source manifest:
-`aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf`.
-Independent QA and full gate pass:68tests/10suites, strict formatting, Xcode Debug
-warnings-as-errors build. No baseline exceptions. Review: engineering/reviews/QA-001-A6.md.
-The board owns exact task state. No source writer is active.
+The latest local test-drive code is the commit containing this A7 update on
+`issue/m0/001-foundation`; exact receipt:
+`.build/evidence/M0-001-A7-author/commit.txt`. Source manifest:
+`f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74`.
+Independent code review and full gate pass: 68 tests in 10 suites, strict
+formatting and Xcode Debug warnings-as-errors build. See QA-001-A7. Xcode's
+optional AppIntents metadata extraction warning is recorded in that report.
+The board owns task state. No source writer is active. The user confirmed the
+prior 1.5-second selection delay is fixed. A7 makes the visible artwork background
+follow the picture aspect ratio in the shared row/detail component.
 
 ## Working behavior and remaining acceptance
 
@@ -17,8 +20,8 @@ The board owns exact task state. No source writer is active.
   no cached picture and correctly keeps a fallback. No addon copies or Steam writes.
 - Advanced panel remains visible; Light→System appearance mismatch is corrected.
 - Row-wide double-click waiting is removed. Identical successful settings saves
-  are deduplicated; failed saves retry. Perceived click latency still needs the
-  user's feedback; tool roundtrip timings are not input-latency measurements.
+  are deduplicated; failed saves retry. The user confirmed the click delay is
+  fixed. A7 also matches artwork boxes to picture proportions in the shared view.
 - Automatic mod dependency selection/ordering is not implemented. Selected order
   is preserved. Actual in-game content loading and both game modes are unverified.
 - User visual/test-drive acceptance remains open. Do not mark the project done
@@ -52,9 +55,9 @@ Milestone `milestone/m0`, default `main`, seed
 `a3ef844f4c9035e590c6d1f2dddb270ac9a50cf7`. Candidate is not a remote integration.
 
 Adopted:ARCH-001r2/AR-001-R2, ARCH-002r1/AR-002-R1, ARCH-003r2/AR-003-R2.
-Current immutable packet:engineering/tasks/M0-001-R3.md. A6 is assisted attempt2;
-all incident counters are preserved, with one assisted repair remaining before
-mandatory redesigned-cycle review if the same incident fails again. A temporary
+Current immutable packet:engineering/tasks/M0-001-R3.md. A7 preserves the incident
+counters and is the last assisted attempt; any further failed repair of this same
+incident requires the documented independent redesign review. A temporary
 Sol capacity error resumed the same model and attempt successfully.
 
 Next:reopen the committed build, finish native appearance/selection smoke, then

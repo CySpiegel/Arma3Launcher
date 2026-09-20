@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "coordinator-managed",
-  "revision": 26,
+  "revision": 29,
   "coordination": {
     "run_phase": "Verifying",
     "execution_authorized": true,
@@ -179,10 +179,10 @@
   "gate": {
     "command": "bash scripts/gate.sh",
     "working_directory": ".",
-    "status": "independent-pass",
+    "status": "pass-with-independent-code-review",
     "execution_status": "68-tests-10-suites-exit0",
     "evidence_ids": [
-      "QA-001-A6"
+      "QA-001-A7"
     ]
   },
   "budget": {
@@ -999,6 +999,37 @@
           "advice": "docs/engineering/reviews/AR-003-R2.md",
           "assisted_attempt": 2,
           "completed_at": "2026-09-20T01:33:32.415080+00:00"
+        },
+        {
+          "id": "M0-001-A7",
+          "task_revision": 3,
+          "stage": "user-presentation-adjustment",
+          "author": "/root",
+          "role": "primary-tiny-edit",
+          "model": "selected-primary",
+          "effort": "selected-primary",
+          "claim": "lead-serialized-M0-001-A7",
+          "workspace": "/Users/spiegel/Projects/Arma3Launcher",
+          "input_manifest": {
+            "task_revision": "81d3c6a34691b600bc3c41aa339dad59e190b71a4f92f5df48dedc36d0e3fe5e",
+            "prior_candidate": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf",
+            "architectures": [
+              "ec9dced52ef371b2915de8a7fab737ee357dedc4baf435784967b6676bbf8619",
+              "862707999aa789fe4092fff45cfeb98ecb84fd8993fae6a6e4dadbd6b39acacf",
+              "a49b591091f465fa9354f7cf5a0d93e19e1088cf301b0a04340515f8dac2ca6b"
+            ]
+          },
+          "repair_ordinal": 6,
+          "status": "submitted",
+          "recorded_at": "2026-09-20T03:12:32.387708+00:00",
+          "candidate": {
+            "source_manifest": ".build/evidence/M0-001-A7-author/source-sha256.txt",
+            "sha256": "f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74"
+          },
+          "evidence_ids": [],
+          "advice": "Existing adopted ARCH-003 shared proportional artwork view; user explicitly requests picture-shaped boxes",
+          "assisted_attempt": 3,
+          "completed_at": "2026-09-20T03:13:02.345975+00:00"
         }
       ],
       "findings": [
@@ -1179,16 +1210,23 @@
         "user_required": true,
         "user_status": "pending-test-drive",
         "real_game_loading": "unverified",
-        "native_click_latency": "requires-user-feedback"
+        "native_click_latency": "user-confirmed-fixed"
       },
       "created_at": "2026-09-19T21:30:01.080729+00:00",
       "updated_at": "2026-09-19T21:41:07.477700+00:00",
       "local_candidate": {
-        "source_manifest_sha256": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf",
+        "source_manifest_sha256": "f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74",
         "branch": "issue/m0/001-foundation",
-        "commit_receipt": ".build/evidence/M0-001-A6-independent/commit.txt",
+        "commit_receipt": ".build/evidence/M0-001-A7-author/commit.txt",
         "purpose": "local-test-drive; no remote merge or release"
-      }
+      },
+      "user_feedback": [
+        {
+          "at": "2026-09-20T03:12:32.387708+00:00",
+          "quote": "looks like you fixed it",
+          "scope": "selection delay on committed575c546; not blanket game/UI acceptance"
+        }
+      ]
     }
   ],
   "architecture_reviews": [
@@ -1608,6 +1646,20 @@
       "kind": "independent-candidate-approved",
       "attempt": "M0-001-A6",
       "note": "Exact submitted source passed independent gate/review; local candidate commit next. User and actual game acceptance remain open."
+    },
+    {
+      "revision": 27,
+      "at": "2026-09-20T03:12:32.387708+00:00",
+      "kind": "user-feedback-and-tiny-adjustment",
+      "attempt": "M0-001-A7",
+      "note": "User confirms selection delay fixed and requests visible artwork boxes follow image aspect ratio. Primary tiny shared-view edit under current architecture; preserve all counts."
+    },
+    {
+      "revision": 29,
+      "at": "2026-09-20T03:14:56.407204+00:00",
+      "kind": "tiny-candidate-approved",
+      "attempt": "M0-001-A7",
+      "note": "Primary shared artwork background adjustment reviewed independently; full gate passes. User selection-latency confirmation retained."
     }
   ],
   "git_workflow": {
@@ -1685,6 +1737,15 @@
       "candidate_manifest_sha256": "aef839af7f9d6c1fd31c0299bc496b0350cd4169d9d26fee2567e77b4d7053cf",
       "verdict": "pass",
       "evidence": "docs/engineering/reviews/QA-001-A6.md"
+    },
+    {
+      "id": "QA-001-A7",
+      "reviewer": "/root/candidate_qa",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "candidate_manifest_sha256": "f0a56daaa9ddd2104f995537cd4fe887fa114f2647615b5c0f83362c83638f74",
+      "verdict": "pass",
+      "evidence": "docs/engineering/reviews/QA-001-A7.md"
     }
   ],
   "hard_limit_exceptions": []

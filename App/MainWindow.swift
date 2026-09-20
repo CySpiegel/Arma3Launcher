@@ -138,12 +138,21 @@ struct ContentArtworkView: View {
                         ? "puzzlepiece.extension.fill" : "shippingbox.fill")
             }
         }
-        .frame(width: size, height: size).padding(size > 40 ? 6 : 2)
+        .frame(width: fittedSize.width, height: fittedSize.height)
         .background(
             artwork.map { canvasColor($0.canvas) } ?? Color.secondary.opacity(0.12),
             in: RoundedRectangle(cornerRadius: size > 40 ? 9 : 7)
         )
+        .frame(width: size, height: size).padding(size > 40 ? 6 : 2)
         .accessibilityLabel(artwork == nil ? "No artwork available" : "Artwork for \(item.displayName)")
+    }
+
+    private var fittedSize: CGSize {
+        guard let dimensions = artwork?.image.size,
+            dimensions.width > 0, dimensions.height > 0
+        else { return CGSize(width: size, height: size) }
+        let scale = size / max(dimensions.width, dimensions.height)
+        return CGSize(width: dimensions.width * scale, height: dimensions.height * scale)
     }
 
     private func canvasColor(_ canvas: ArtworkCanvas) -> Color {
